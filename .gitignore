@@ -1,0 +1,87 @@
+target/
+benchmark/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+.kotlin
+
+### IntelliJ IDEA ###
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+*.iws
+*.iml
+*.ipr
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+# Local environment & secrets
+.env
+.env.*
+*.keystore
+*.jks
+*.p12
+
+# Spring Boot local overrides (do not commit local config)
+application-*.yml
+application-*.yaml
+application-*.properties
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+*.tmp
+
+# Build outputs & Java
+**/target/
+**/build/
+*.class
+*.jar
+*.war
+
+# Binary files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Maven wrapper & settings
+.mvn/wrapper/maven-wrapper.jar
+settings.xml
+
+# IDEs and editors (additional)
+.idea/
+*.iml
+*.iws
+.project
+.classpath
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
