@@ -4,6 +4,7 @@ benchmark/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .kotlin
+environment/data/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

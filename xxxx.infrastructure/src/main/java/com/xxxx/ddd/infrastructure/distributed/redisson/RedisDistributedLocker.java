@@ -6,7 +6,7 @@ public interface RedisDistributedLocker {
     // Here, only write the interface for distributed Lock
     // And please explain each function, in public.. read
 
-    boolean tryLock(Long waitTime, long releaseTime, TimeUnit unit) throws InterruptedException;
+    boolean tryLock(long waitTime, long releaseTime, TimeUnit unit) throws InterruptedException;
 
     void lock(long leaseTime, TimeUnit unit);
 

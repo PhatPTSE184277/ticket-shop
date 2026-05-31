@@ -17,12 +17,12 @@ public class RedisDistributedLockerImpl implements RedisDistributedService {
     private RedissonClient redissonClient;
 
     @Override
-    public RedisDistributedLocker redisDistributedLocker(String lockKey) {
+    public RedisDistributedLocker getDistributedLock(String lockKey) {
         RLock rLock = redissonClient.getLock(lockKey);
 
         return new RedisDistributedLocker() {
             @Override
-            public boolean tryLock(Long waitTime, long releaseTime, TimeUnit unit) throws InterruptedException {
+            public boolean tryLock(long waitTime, long releaseTime, TimeUnit unit) throws InterruptedException {
                 boolean isLockSuccess = rLock.tryLock(waitTime, releaseTime, unit);
                 log.info("{} get lock result:{}", lockKey, isLockSuccess);
                 return isLockSuccess;
