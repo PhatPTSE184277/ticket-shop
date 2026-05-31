@@ -1,8 +1,10 @@
 package com.xxxx.ddd.infrastructure.cache.redis;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.mapping.Map;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -12,6 +14,7 @@ import java.util.Optional;
 @Component
 @Slf4j
 public class RedisInfrasServiceImpl implements RedisInfrasService {
+
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -61,6 +64,36 @@ public class RedisInfrasServiceImpl implements RedisInfrasService {
         if (result == null){
             return null;
         }
-        return null;
+        //        try {
+//            log.info("get Cache::1{}", JSON.parseObject((String) result, targetClass));
+//            return JSON.parseObject((String) result, targetClass);
+//        } catch (Exception e) {
+//            log.error("error Cache::{}", e);
+//            return null;
+//        }
+        // Nếu kết quả là một LinkedHashMap
+        if (result instanceof Map){
+            try {
+                // Chuyển đổi LinkedHashMap thành đối tượng mục tiêu
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.convertValue(result, targetClass);
+            }catch (IllegalArgumentException e){
+                log.error("Error converting LinkedHashMap to Object: {}", e.getMessage());
+                return null;
+            }
+        }
+
+        // Nếu result là String, thực hiện chuyển đổi bình thường
+        if (result instanceof String){
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.readValue((String) result, targetClass);
+            }catch (JsonProcessingException e){
+                log.error("Error deserializing JSON to object: {}", e.getMessage());
+                return null;
+            }
+        }
+
+        return null;// hoặc ném ra một ngoại lệ tùy ý
     }
 }
