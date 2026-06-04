@@ -5,6 +5,7 @@ benchmark/
 !**/src/test/**/target/
 .kotlin
 environment/data/
+environment/grafana-storage/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

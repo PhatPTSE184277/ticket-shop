@@ -7,6 +7,7 @@ public interface RedisInfrasService {
     String getString(String key);
 
     void setObject(String key, Object value);
+    void setObject(String key, Object value, long timeout, TimeUnit timeUnit);
     <T> T getObject(String key, Class<T> targetClass);
 
 //    void put(String key, Object value, long timeOut, TimeUnit timeUnit);

@@ -2,6 +2,7 @@
 
 Open environment -> Run
 > docker-compose -f environment/docker-compose-dev.yml up
+> docker run --rm williamyeh/wrk -t5 -c100 -d2m http://host.docker.internal:8080/ticket/1/detail/1
 
 Câu lệnh trên sẽ tự động tạo db với các thông số sau:
 ```bash

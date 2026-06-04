@@ -4,12 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.mapping.Map;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -55,6 +56,18 @@ public class RedisInfrasServiceImpl implements RedisInfrasService {
 //        // Kiểm tra xem giá trị có được lưu thành công hay không
 //        Object result = redisTemplate.opsForValue().get(key);
 //        log.info("Set redis::{}", result != null && result.equals(value));
+    }
+
+    public void setObject(String key, Object value, long timeout, TimeUnit timeUnit) {
+        if (!StringUtils.hasLength(key)){
+            return;
+        }
+
+        try{
+            redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
+        }catch (Exception e){
+            log.error("setObject error:{}", e.getMessage());
+        }
     }
 
     @Override
