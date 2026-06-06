@@ -156,7 +156,7 @@ services:
       - pre-event-network
 
   kibana:
-    image: kibana:7.17.25
+    image: kibana:8.19.16
     container_name: pre-event-kibana
     volumes:
       - ./elk/kibana.yml:/usr/share/kibana/config/kibana.yml
