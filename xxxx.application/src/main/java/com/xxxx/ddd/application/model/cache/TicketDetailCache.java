@@ -13,7 +13,7 @@ public class TicketDetailCache {
         this.ticketDetail = ticketDetail;
         return this;
     }
-    
+
     public TicketDetailCache withVersion(Long version) {
         this.version = version;
         return this;
