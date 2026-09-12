@@ -38,3 +38,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+#env
+.env
+*.env
+environment/mysqld-exporter/.my.cnf
