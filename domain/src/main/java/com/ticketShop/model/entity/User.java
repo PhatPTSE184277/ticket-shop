@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.UserRole;
 import com.ticketShop.model.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,8 +28,8 @@ public class User {
     @Column(name = "username", length = 50, nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password_hash", length = 255, nullable = false)
-    private String passwordHash;
+    @Column(name = "password", length = 255, nullable = false)
+    private String password;
 
     @Column(name = "email", length = 100, nullable = false, unique = true)
     private String email;
@@ -43,6 +44,10 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
     private UserStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", length = 20, nullable = false)
+    private UserRole role = UserRole.CUSTOMER;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

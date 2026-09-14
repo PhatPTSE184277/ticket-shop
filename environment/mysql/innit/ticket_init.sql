@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `ticket-shop`.`users` (
     `username` VARCHAR(50) NOT NULL COMMENT 'Tên đăng nhập',
     `email` VARCHAR(100) NOT NULL COMMENT 'Email liên hệ / Nhận vé',
     `phone` VARCHAR(20) NOT NULL COMMENT 'Số điện thoại',
-    `password_hash` VARCHAR(255) NOT NULL COMMENT 'Mật khẩu mã hóa',
+    `password` VARCHAR(255) NOT NULL COMMENT 'Mật khẩu mã hóa',
     `full_name` VARCHAR(100) NOT NULL COMMENT 'Họ và tên',
     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '1: Active, 0: Blocked, -1: Unverified',
     `role` VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER' COMMENT 'CUSTOMER, ADMIN',
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `ticket-shop`.`users` (
     UNIQUE KEY `uk_email` (`email`),
     UNIQUE KEY `uk_phone` (`phone`),
     KEY `idx_status` (`status`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý người dùng';
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý người dùng';
 
 -- 1. ticket table
 CREATE TABLE IF NOT EXISTS `ticket-shop`.`ticket`(
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `ticket-shop`.`ticket`(
     `created_at`   DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation time',
     PRIMARY KEY (`id`),
     KEY `idx_status_time` (`status`, `start_time`, `end_time`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'ticket table';
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'ticket table';
 
 -- 2. ticket detail (item) table
 CREATE TABLE IF NOT EXISTS `ticket-shop`.`ticket_item` (
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `ticket-shop`.`ticket_item` (
     PRIMARY KEY (`id`),
     KEY `idx_activity_id` (`activity_id`),
     KEY `idx_status_sale_time` (`status`, `sale_start_time`, `sale_end_time`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Table for ticket details';
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Table for ticket details';
 
 -- INSERT MOCK DATA
 -- Insert data into `ticket` table
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `ticket-shop`.`ticket_order_202604` (
     UNIQUE KEY `order_number` (`order_number`),
     KEY `order_date` (`order_date`),
     KEY `index_usr_id` (`user_id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'order table';
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'order table';
 -- insert data: Tạo đơn hàng
 INSERT INTO `ticket-shop`.`ticket_order_202604` (order_number, user_id, total_amount, terminal_id, order_date, order_notes)
 VALUES ('ORD2025020001', 1001, 5600.00, 'POS001', '2025-02-28 10:00:00', 'Family trip');
