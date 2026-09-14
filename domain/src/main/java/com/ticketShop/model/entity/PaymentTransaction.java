@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -34,8 +35,9 @@ public class PaymentTransaction {
     @Column(name = "payment_method")
     private String paymentMethod;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "payment_status")
-    private Integer paymentStatus; // 0:INIT, 1:IN_PROGRESS, 2:SUCCESS, 3:FAILED
+    private PaymentStatus paymentStatus; // 0:INIT, 1:IN_PROGRESS, 2:SUCCESS, 3:FAILED
 
     @Column(name = "gateway_transaction_id")
     private String gatewayTransactionId;

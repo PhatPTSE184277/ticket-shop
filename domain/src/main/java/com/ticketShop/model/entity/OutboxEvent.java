@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.OutboxEventStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,8 +33,10 @@ public class OutboxEvent {
     @Column(name = "payload", nullable = false, columnDefinition = "JSON")
     private String payload;
 
+    // 0=PENDING, 1=PUBLISHED
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
-    private int status;
+    private OutboxEventStatus status;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

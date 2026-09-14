@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -53,8 +54,9 @@ public class TicketOrder {
      * 3: EXPIRED (Hết hạn do không thanh toán kịp)
      * 4: REFUNDED (Đã hoàn tiền)
      */
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "order_status")
-    private Integer orderStatus;
+    private OrderStatus orderStatus;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

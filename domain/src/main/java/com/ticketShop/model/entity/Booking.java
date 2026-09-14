@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.OutboxEventStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +31,9 @@ public class Booking {
     private String bookingCode;
 
     // 0=PENDING, 1=CONFIRMED, 2=CANCELLED
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
-    private Integer status;
+    private OutboxEventStatus status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

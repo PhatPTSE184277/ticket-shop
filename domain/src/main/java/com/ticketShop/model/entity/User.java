@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,8 +40,9 @@ public class User {
     private String fullName;
 
     // 0=INACTIVE, 1=ACTIVE, 2=BLOCKED
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
-    private Integer status;
+    private UserStatus status;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

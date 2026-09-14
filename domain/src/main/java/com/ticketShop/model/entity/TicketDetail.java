@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -46,8 +47,9 @@ public class TicketDetail {
     @Column(name = "sale_end_time")
     private LocalDateTime saleEndTime;        // Thời gian kết thúc bán
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status")
-    private int status;              // 0=INACTIVE, 1=ACTIVE, 2=DELETED
+    private TicketStatus status;              // 0=INACTIVE, 1=ACTIVE, 2=DELETED
 
     @Column(name = "activity_id")
     private Long activityId;         // Có thể là FK tới Ticket

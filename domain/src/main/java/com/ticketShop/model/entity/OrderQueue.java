@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.OrderQueueStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,8 +34,9 @@ public class OrderQueue {
     private Long userId;
 
     // 0=PENDING, 1=SUCCESS, 2=FAILED
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
-    private Integer status;
+    private OrderQueueStatus status;
 
     @Column(name = "order_number")
     private String orderNumber;

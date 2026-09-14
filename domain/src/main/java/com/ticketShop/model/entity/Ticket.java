@@ -1,5 +1,6 @@
 package com.ticketShop.model.entity;
 
+import com.ticketShop.model.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -30,8 +31,9 @@ public class Ticket {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status")
-    private int status; // 0=INACTIVE, 1=ACTIVE, 2=DELETED
+    private TicketStatus status; // 0=INACTIVE, 1=ACTIVE, 2=DELETED
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
