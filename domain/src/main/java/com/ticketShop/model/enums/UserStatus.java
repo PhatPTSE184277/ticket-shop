@@ -9,7 +9,7 @@ public enum UserStatus {
     BLOCKED(2);
 
     private final int value;
-a
+
     UserStatus(int value) {
         this.value = value;
     }

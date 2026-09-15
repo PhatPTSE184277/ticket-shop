@@ -1,5 +1,6 @@
 package com.ticketShop;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,8 @@ public class StartApplication {
 //        SpringApplication app = new SpringApplication(StartApplication.class);
 //        app.setApplicationStartup(new BufferingApplicationStartup(2048));
 //        app.run(args);
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+        dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
         SpringApplication.run(StartApplication.class, args);
     }
 
