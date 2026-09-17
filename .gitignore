@@ -42,4 +42,23 @@ build/
 #env
 .env
 *.env
+!.env.example
 environment/mysqld-exporter/.my.cnf
+
+### Docker data ###
+environment/data/
+environment/grafana-storage/
+
+### Logs ###
+*.log
+logs/
+
+### OS ###
+Thumbs.db
+Desktop.ini
+
+### Temporary files ###
+*.tmp
+*.temp
+*.swp
+*.swo

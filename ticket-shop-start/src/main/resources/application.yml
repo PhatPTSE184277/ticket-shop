@@ -1,0 +1,91 @@
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 200 #
+      min-spare: 50
+    #    max-connections: 8000
+    accept-count: 20000
+
+
+spring:
+  # application
+  application:
+    name: ticket-shop.com
+  #DBS
+  datasource:
+    hikari:
+      maximum-pool-size: 20  # Số lượng tối đa kết nối
+      minimum-idle: 5        # Số lượng kết nối tối thiểu trong pool
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3316}/${MYSQL_DATABASE:ticket-shop}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root1234}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: none  # Không tự động tạo/ cập nhật bảng thay vì update
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+  jackson:
+    serialization:
+      indent-output: true
+  # Redis server connection settings
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1} # Host of the Redis server
+      port: ${REDIS_PORT:6319} # Port of the Redis server for connection
+      password: "${REDIS_PASSWORD:}"  # Password for connecting to the Redis server (default is empty)
+      lettuce:
+        pool: # Connection pool settings
+          max-active: ${REDIS_CONNECTION_POOL_SIZE:10} # Maximum number of active connections in the pool (uses -1 for no limit)
+          max-idle: 5 # Maximum number of idle connections in the pool
+          min-idle: ${REDIS_CONNECTION_MINIMUM_IDLE_SIZE:5} # Minimum number of idle connections in the pool
+      #          max-wait: -1ms # Maximum wait time to get a connection from the pool (uses -1 for no limit)
+      connect-timeout: 30000 # Connection timeout (in milliseconds)
+  threads:
+    virtual:
+      enabled: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      checkRandom:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        #        slidingWindowType: TIME_BASED
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+
+  ratelimiter:
+    instances:
+      backendA:
+        limitForPeriod: 2
+        limitRefreshPeriod: 10s
+        timeoutDuration: 0
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 100
+      backendB:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 3s
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - '*'
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
