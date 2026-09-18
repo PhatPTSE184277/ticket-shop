@@ -8,8 +8,8 @@ USE `ticket-shop`;
 
 -- 2. Bảng quản lý người dùng (users)
 CREATE TABLE IF NOT EXISTS `users` (
-                                       `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary Key - User ID',
-                                       `username` VARCHAR(50) NOT NULL COMMENT 'Tên đăng nhập',
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary Key - User ID',
+    `username` VARCHAR(50) NOT NULL COMMENT 'Tên đăng nhập',
     `email` VARCHAR(100) NOT NULL COMMENT 'Email liên hệ / Nhận vé',
     `phone` VARCHAR(20) NOT NULL COMMENT 'Số điện thoại',
     `password` VARCHAR(255) NOT NULL COMMENT 'Mật khẩu mã hóa',
@@ -41,8 +41,8 @@ CREATE TABLE IF NOT EXISTS `ticket` (
 
 -- 4. Bảng chi tiết loại vé (ticket_item)
 CREATE TABLE IF NOT EXISTS `ticket_item` (
-                                             `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
-                                             `name` VARCHAR(50) NOT NULL COMMENT 'Ticket title',
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
+    `name` VARCHAR(50) NOT NULL COMMENT 'Ticket title',
     `description` TEXT COMMENT 'Ticket description',
     `stock_initial` INT NOT NULL DEFAULT 0 COMMENT 'Initial stock quantity',
     `stock_available` INT NOT NULL DEFAULT 0 COMMENT 'Current available stock',
@@ -62,9 +62,9 @@ CREATE TABLE IF NOT EXISTS `ticket_item` (
 
 -- 5. Bảng đơn hàng (ticket_order_202604)
 CREATE TABLE IF NOT EXISTS `ticket_order_202604` (
-                                                     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Unique ticket sales ID',
-                                                     `user_id` BIGINT NOT NULL COMMENT 'userId',
-                                                     `order_number` VARCHAR(50) NOT NULL COMMENT 'Unique order number',
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Unique ticket sales ID',
+    `user_id` BIGINT NOT NULL COMMENT 'userId',
+    `order_number` VARCHAR(50) NOT NULL COMMENT 'Unique order number',
     `total_amount` DECIMAL(12,2) NOT NULL COMMENT 'Total payment amount',
     `terminal_id` VARCHAR(20) NOT NULL COMMENT 'ID of the sales terminal',
     `order_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date and time of ticket purchase',
@@ -79,9 +79,9 @@ CREATE TABLE IF NOT EXISTS `ticket_order_202604` (
 
 -- 6. Bảng chi tiết đơn hàng (ticket_order_details_202604)
 CREATE TABLE IF NOT EXISTS `ticket_order_details_202604` (
-                                                             `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Unique ticket sales ID',
-                                                             `ticket_item_id` BIGINT NOT NULL COMMENT 'ticket detail ID',
-                                                             `order_number` VARCHAR(50) NOT NULL COMMENT 'Reference to the order number',
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Unique ticket sales ID',
+    `ticket_item_id` BIGINT NOT NULL COMMENT 'ticket detail ID',
+    `order_number` VARCHAR(50) NOT NULL COMMENT 'Reference to the order number',
     `passenger_name` VARCHAR(100) NOT NULL COMMENT 'Passenger full name',
     `passenger_id` VARCHAR(20) NOT NULL COMMENT 'National ID or passport number',
     `departure_station` VARCHAR(10) NOT NULL COMMENT 'Departure station code',

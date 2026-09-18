@@ -89,6 +89,9 @@ public class TicketDetailCacheService {
                 return ticketDetailCache;
             }
             TicketDetail ticketDetail = ticketDetailDomainService.getTicketDetailById(id);
+            if (ticketDetail == null) {
+                return null;
+            }
             ticketDetailCache = new TicketDetailCache().withClone(ticketDetail).withVersion(System.currentTimeMillis());
             // set data to distributed cache
             redisInfraService.setObject(genEventItemKey(id), ticketDetailCache);
@@ -113,7 +116,9 @@ public class TicketDetailCacheService {
         }
         // 2 - put data to local cache
         // lock()
-        ticketDetailLocalCache.put(id, ticketDetailCache); //.. consistency cache
+        if(ticketDetailCache != null) {
+            ticketDetailLocalCache.put(id, ticketDetailCache); //.. consistency cache
+        }
         // unLock()
         log.info("GET TICKET FROM DISTRIBUTED CACHE");
         return ticketDetailCache;

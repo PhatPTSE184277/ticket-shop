@@ -13,6 +13,7 @@ public class TicketDetailDomainServiceImpl implements TicketDetailDomainService 
 
     @Override
     public TicketDetail getTicketDetailById(Long id) {
-        return ticketDetailRepository.findById(id).orElse(null);
+        return ticketDetailRepository.findById(id)
+                .orElse(null);
     }
 }

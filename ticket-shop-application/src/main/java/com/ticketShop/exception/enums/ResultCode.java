@@ -1,8 +1,8 @@
-package com.ticketShop.model.enums;
+package com.ticketShop.exception.enums;
 
 /**
  * Trả về mã trạng thái
- * Chữ số đầu tiên: 1: Sản phẩm; 2: Người dùng; 3: Giao dịch,
+ * Chữ số đầu tiên: 1: Vé; 2: Người dùng; 3: Giao dịch,
  * 4: Khuyến mãi, 5: Cửa hàng, 6: Trang web, 7: Cài đặt, 8: Khác
  *
  * @author tanphat
@@ -39,7 +39,14 @@ public enum ResultCode {
      * Ngoại lệ hệ thống
      */
     RATE_LIMIT_ERROR(1003, "Truy cập quá thường xuyên, vui lòng thử lại sau"),
+
+
+    /**
+     * Vé
+     */
+        TICKET_DETAIL_NOT_EXIST(11001, "Vé không tồn tại"),
     ;
+
 
 
     private final Integer code;

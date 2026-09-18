@@ -47,7 +47,7 @@ public class ResultUtil<T> {
      * @param resultCode Mã trả về
      * @return Trả về thông báo thành công
      */
-    public ResultMessage<T> setSuccessMsg(ResultCode resultCode) {
+    public ResultMessage<T> setSuccessMsg(com.ticketShop.exception.enums.ResultCode resultCode) {
         this.responseMessage.setSuccess(true);
         this.responseMessage.setMessage(resultCode.message());
         this.responseMessage.setCode(resultCode.code());
@@ -72,7 +72,7 @@ public class ResultUtil<T> {
      * @param responseStatusCode Mã trạng thái trả về
      * @return Thông báo
      */
-    public static <T> ResultMessage<T> success(ResultCode responseStatusCode) {
+    public static <T> ResultMessage<T> success(com.ticketShop.exception.enums.ResultCode responseStatusCode) {
         return new ResultUtil<T>().setSuccessMsg(responseStatusCode);
     }
 
@@ -82,7 +82,7 @@ public class ResultUtil<T> {
      * @return Thông báo
      */
     public static <T> ResultMessage<T> success() {
-        return new ResultUtil<T>().setSuccessMsg(ResultCode.SUCCESS);
+        return new ResultUtil<T>().setSuccessMsg(com.ticketShop.exception.enums.ResultCode.SUCCESS);
     }
 
     /**
@@ -91,7 +91,7 @@ public class ResultUtil<T> {
      * @param responseStatusCode Mã trạng thái trả về
      * @return Thông báo
      */
-    public static <T> ResultMessage<T> error(ResultCode responseStatusCode) {
+    public static <T> ResultMessage<T> error(com.ticketShop.exception.enums.ResultCode responseStatusCode) {
         return new ResultUtil<T>().setErrorMsg(responseStatusCode);
     }
 
@@ -112,7 +112,7 @@ public class ResultUtil<T> {
      * @param resultCode Mã trả về
      * @return Thông báo
      */
-    public ResultMessage<T> setErrorMsg(ResultCode resultCode) {
+    public ResultMessage<T> setErrorMsg(com.ticketShop.exception.enums.ResultCode resultCode) {
         this.responseMessage.setSuccess(false);
         this.responseMessage.setMessage(resultCode.message());
         this.responseMessage.setCode(resultCode.code());

@@ -2,6 +2,17 @@
 
 Project thực hành xây dựng hệ thống đặt vé flash sale chịu tải cao theo DDD. Bài toán chính là bán vé sự kiện — stock giới hạn, nhiều người đặt cùng lúc, không được oversell, server không được sập.
 
+Mục tiêu chính:
+
+Xử lý lượng request lớn trong thời điểm Flash Sale.
+Đảm bảo không oversell khi nhiều user đặt cùng lúc.
+Giảm tải cho MySQL bằng Redis Cache.
+Sử dụng Distributed Lock khi cần đồng bộ tài nguyên.
+Xử lý đặt vé bất đồng bộ với Kafka.
+Đảm bảo message không bị mất bằng Outbox Pattern.
+Đảm bảo consumer không xử lý duplicate bằng Idempotency.
+Theo dõi hiệu năng bằng Prometheus, Grafana và Load Testing.
+
 ---
 
 ## Architecture Diagrams
@@ -309,36 +320,56 @@ Circuit Breaker state — `/actuator/health`
 ## Config nhanh (`application.yml`)
 
 ```yaml
+## Config nhanh (`application.yml`)
+
 server:
-  port: 1122
+  port: 8080
   tomcat:
-    accept-count: 2000
-    max-connections: 10000
+    threads:
+      max: 200
+      min-spare: 50
+    accept-count: 20000
 
 spring:
   threads:
     virtual:
-      enabled: true   # Java 21
+      enabled: true
 
   datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3316}/${MYSQL_DATABASE:ticket-shop}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root1234}
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 100
+      maximum-pool-size: 20
+      minimum-idle: 5
 
-  kafka:
-    bootstrap-servers: localhost:9094
-    consumer:
-      group-id: order-consumer-group
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6319}
+      password: "${REDIS_PASSWORD:}"
+      connect-timeout: 30000
+      lettuce:
+        pool:
+          max-active: ${REDIS_CONNECTION_POOL_SIZE:10}
+          max-idle: 5
+          min-idle: ${REDIS_CONNECTION_MINIMUM_IDLE_SIZE:5}
 
 resilience4j:
   circuitbreaker:
     instances:
       checkRandom:
         slidingWindowSize: 10
+        minimumNumberOfCalls: 5
         failureRateThreshold: 50
+        permittedNumberOfCallsInHalfOpenState: 3
         waitDurationInOpenState: 5s
+
   ratelimiter:
     instances:
       backendA:
         limitForPeriod: 2
         limitRefreshPeriod: 10s
+        timeoutDuration: 0
 ```
