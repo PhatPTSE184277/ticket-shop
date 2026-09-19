@@ -1,5 +1,6 @@
 package com.ticketShop.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @author tanphat
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResultMessage<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 

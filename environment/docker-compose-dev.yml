@@ -175,10 +175,10 @@ services:
       - elasticsearch
 
 #  logstash-exporter:
-#    image: alxrem/prometheus-logstash-exporter
+#    image: alxrem/prometheus-logstash-exporter:latest
 #    container_name: pre-event-logstash-exporter
-#    command: ["-logstash.host", "logstash"]
-#    platform: linux/arm64/v8
+#    command: [ "-logstash.host", "logstash" ]
+#    platform: linux/amd64
 #    environment:
 #      LOGSTASH_URI: "http://logstash:9600" # Kết nối tới Logstash API
 #    ports:
