@@ -20,34 +20,44 @@ public class PaymentTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "payment_id")
-    private String paymentId;
+    @Column(name = "payment_id", nullable = false, unique = true, length = 64)
+    private String paymentId; // Mã thanh toán duy nhất
 
-    @Column(name = "order_number")
-    private String orderNumber;
+    @Column(name = "order_id", nullable = false)
+    private Long orderId; // ID đơn hàng
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId; // ID người dùng
 
-    @Column(name = "amount")
-    private BigDecimal amount;
+    @Column(name = "amount", nullable = false)
+    private BigDecimal amount; // Số tiền thanh toán
 
-    @Column(name = "payment_method")
-    private String paymentMethod;
+    @Column(name = "payment_method", nullable = false, length = 20)
+    private String paymentMethod; // VNPAY, MOMO, LINKED_BANK...
 
+    /**
+     * Trạng thái thanh toán:
+     * 0: INIT - Khởi tạo
+     * 1: IN_PROGRESS - Đang xử lý
+     * 2: SUCCESS - Thành công
+     * 3: FAILED - Thất bại
+     */
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "payment_status")
-    private PaymentStatus paymentStatus; // 0:INIT, 1:IN_PROGRESS, 2:SUCCESS, 3:FAILED
+    @Column(name = "payment_status", nullable = false)
+    private PaymentStatus paymentStatus;
 
-    @Column(name = "gateway_transaction_id")
-    private String gatewayTransactionId;
+    @Column(name = "gateway_transaction_id", length = 100)
+    private String gatewayTransactionId; // Mã giao dịch từ cổng thanh toán
 
-    @Column(name = "payment_url")
-    private String paymentUrl;
+    @Column(name = "payment_url", columnDefinition = "TEXT")
+    private String paymentUrl; // URL thanh toán
 
-    @Column(name = "updated_at")
+    @Column(name = "paid_at")
+    private LocalDateTime paidAt; // Thời gian thanh toán thành công
+
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 }

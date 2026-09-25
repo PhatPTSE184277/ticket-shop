@@ -2,9 +2,7 @@ package com.ticketShop.model.entity;
 
 import com.ticketShop.model.enums.OrderQueueStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
@@ -22,31 +20,36 @@ public class OrderQueue {
     private Long id;
 
     @Column(name = "token", unique = true, nullable = false, length = 64)
-    private String token;
+    private String token; // Token định danh request đặt vé
 
-    @Column(name = "ticket_id", nullable = false)
-    private Long ticketId;
+    @Column(name = "ticket_item_id", nullable = false)
+    private Long ticketItemId; // ID loại vé
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    private Integer quantity; // Số lượng vé cần đặt
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private Long userId; // ID người dùng
 
-    // 0=PENDING, 1=SUCCESS, 2=FAILED
+    /**
+     * Trạng thái xử lý request:
+     * 0: PENDING - Đang chờ xử lý
+     * 1: SUCCESS - Xử lý thành công
+     * 2: FAILED - Xử lý thất bại
+     */
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
     private OrderQueueStatus status;
 
-    @Column(name = "order_number")
-    private String orderNumber;
+    @Column(name = "order_id")
+    private Long orderId; // ID đơn hàng được tạo sau khi xử lý thành công
 
     @Column(name = "message")
-    private String message;
+    private String message; // Thông báo kết quả xử lý
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt; // Thời gian tạo request
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt; // Thời gian cập nhật gần nhất
 }

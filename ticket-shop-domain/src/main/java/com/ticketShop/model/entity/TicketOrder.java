@@ -20,47 +20,39 @@ public class TicketOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_number")
-    private String orderNumber;
+    @Column(name = "user_id", nullable = false)
+    private Long userId; // ID người dùng đặt vé
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "order_number", nullable = false, unique = true, length = 50)
+    private String orderNumber; // Mã đơn hàng duy nhất
 
-    // -- BỔ SUNG 2 TRƯỜNG NÀY ĐỂ KHỚP VỚI DATABASE --
-    @Column(name = "ticket_id")
-    private Long ticketId;
-
-    @Column(name = "quantity")
-    private Integer quantity;
-    // ----------------------------------------------
-
-    @Column(name = "total_amount")
-    private BigDecimal totalAmount;
-
-    @Column(name = "terminal_id")
-    private String terminalId;
-
-    @Column(name = "order_date")
-    private LocalDateTime orderDate;
-
-    @Column(name = "order_notes")
-    private String orderNotes;
+    @Column(name = "total_amount", nullable = false)
+    private BigDecimal totalAmount; // Tổng số tiền của đơn hàng
 
     /**
      * Trạng thái đơn hàng:
-     * 0: PENDING (Đang chờ - Mới tạo)
-     * 1: SUCCESS (Thanh toán thành công)
-     * 2: CANCELLED (Người dùng chủ động hủy)
-     * 3: EXPIRED (Hết hạn do không thanh toán kịp)
-     * 4: REFUNDED (Đã hoàn tiền)
+     * 0: PENDING - Chờ thanh toán
+     * 1: SUCCESS - Thành công
+     * 2: CANCELLED - Đã hủy
+     * 3: EXPIRED - Hết hạn
+     * 4: REFUNDED - Đã hoàn tiền
      */
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "order_status")
+    @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "order_date", nullable = false)
+    private LocalDateTime orderDate; // Thời gian đặt vé
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "expire_at")
+    private LocalDateTime expireAt; // Thời gian đơn hàng hết hạn thanh toán
+
+    @Column(name = "order_notes", length = 255)
+    private String orderNotes; // Ghi chú đơn hàng
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt; // Thời gian cập nhật gần nhất
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt; // Thời gian tạo đơn hàng
 }

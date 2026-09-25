@@ -6,6 +6,7 @@ import com.ticketShop.repository.TicketDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,5 +17,10 @@ public class TicketDetailRepositoryImpl implements TicketDetailRepository {
     @Override
     public Optional<TicketDetail> findById(Long id) {
         return ticketDetailJPAMapper.findById(id);
+    }
+
+    @Override
+    public List<TicketDetail> findByTicketId(Long ticketId) {
+        return ticketDetailJPAMapper.findByActivityId(ticketId);
     }
 }

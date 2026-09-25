@@ -3,14 +3,14 @@ package com.ticketShop.model.enums;
 import lombok.Getter;
 
 @Getter
-public enum BookingStatus {
-    PENDING(0),
-    CONFIRMED(1),
-    CANCELLED(2);
+public enum TicketEventStatus {
+    INACTIVE(0),
+    ACTIVE(1),
+    DELETED(2);
 
     private final int value;
 
-    BookingStatus(int value) {
+    TicketEventStatus(int value) {
         this.value = value;
     }
 }

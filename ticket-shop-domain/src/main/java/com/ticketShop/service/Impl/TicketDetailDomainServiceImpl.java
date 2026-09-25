@@ -12,8 +12,8 @@ public class TicketDetailDomainServiceImpl implements TicketDetailDomainService 
     private TicketDetailRepository ticketDetailRepository;
 
     @Override
-    public TicketDetail getTicketDetailById(Long id) {
-        return ticketDetailRepository.findById(id)
+    public TicketDetail getTicketDetailById(Long detailId) {
+        return ticketDetailRepository.findById(detailId)
                 .orElse(null);
     }
 }

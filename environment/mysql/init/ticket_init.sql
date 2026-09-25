@@ -1,23 +1,24 @@
--- 1. Tái tạo Database
+-- 1. TÁI TẠO DATABASE
 DROP DATABASE IF EXISTS `ticket-shop`;
-CREATE DATABASE IF NOT EXISTS `ticket-shop`
+CREATE DATABASE `ticket-shop`
     DEFAULT CHARSET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
 
 USE `ticket-shop`;
 
--- 2. Bảng quản lý người dùng (users)
+
+-- 2. BẢNG QUẢN LÝ NGƯỜI DÙNG (users)
 CREATE TABLE IF NOT EXISTS `users` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary Key - User ID',
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID người dùng',
     `username` VARCHAR(50) NOT NULL COMMENT 'Tên đăng nhập',
-    `email` VARCHAR(100) NOT NULL COMMENT 'Email liên hệ / Nhận vé',
+    `email` VARCHAR(100) NOT NULL COMMENT 'Địa chỉ email',
     `phone` VARCHAR(20) NOT NULL COMMENT 'Số điện thoại',
-    `password` VARCHAR(255) NOT NULL COMMENT 'Mật khẩu mã hóa',
-    `full_name` VARCHAR(100) NOT NULL COMMENT 'Họ và tên',
-    `status` TINYINT NOT NULL DEFAULT 1 COMMENT '1: Active, 0: Blocked, -1: Unverified',
-    `role` VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER' COMMENT 'CUSTOMER, ADMIN',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `password` VARCHAR(255) NOT NULL COMMENT 'Mật khẩu đã mã hóa',
+    `full_name` VARCHAR(100) NOT NULL COMMENT 'Họ và tên người dùng',
+    `status` TINYINT NOT NULL DEFAULT 1 COMMENT 'Trạng thái tài khoản (0: Không hoạt động, 1: Hoạt động, 2: Bị khóa)',
+    `role` VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER' COMMENT 'Vai trò người dùng (CUSTOMER, STAFF, ADMIN)',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời gian cập nhật gần nhất',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo tài khoản',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_username` (`username`),
     UNIQUE KEY `uk_email` (`email`),
@@ -25,158 +26,221 @@ CREATE TABLE IF NOT EXISTS `users` (
     KEY `idx_status` (`status`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý người dùng';
 
--- 3. Bảng sự kiện (ticket)
-CREATE TABLE IF NOT EXISTS `ticket` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
-    `name` VARCHAR(50) NOT NULL COMMENT 'ticket name',
-    `description` TEXT COMMENT 'ticket description',
-    `start_time` DATETIME NOT NULL COMMENT 'ticket sale start time',
-    `end_time` DATETIME NOT NULL COMMENT 'ticket sale end time',
-    `status` INT NOT NULL DEFAULT 0 COMMENT 'ticket sale activity status (0: inactive, 1: active)',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last update time',
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation time',
+
+-- 3. BẢNG SỰ KIỆN MỞ BÁN VÉ (ticket_event)
+CREATE TABLE IF NOT EXISTS `ticket_event` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID sự kiện',
+    `name` VARCHAR(100) NOT NULL COMMENT 'Tên sự kiện',
+    `description` TEXT NULL COMMENT 'Mô tả sự kiện',
+    `start_time` DATETIME NOT NULL COMMENT 'Thời gian bắt đầu mở bán',
+    `end_time` DATETIME NOT NULL COMMENT 'Thời gian kết thúc mở bán',
+    `status` TINYINT NOT NULL DEFAULT 0 COMMENT 'Trạng thái sự kiện (0: Không hoạt động, 1: Đang hoạt động, 2: Đã kết thúc, 3: Đã xóa)',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời gian cập nhật gần nhất',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo sự kiện',
     PRIMARY KEY (`id`),
     KEY `idx_status_time` (`status`, `start_time`, `end_time`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng danh mục vé/sự kiện';
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý sự kiện mở bán vé';
 
--- 4. Bảng chi tiết loại vé (ticket_item)
+
+-- 4. BẢNG CHI TIẾT LOẠI VÉ (ticket_item)
 CREATE TABLE IF NOT EXISTS `ticket_item` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
-    `name` VARCHAR(50) NOT NULL COMMENT 'Ticket title',
-    `description` TEXT COMMENT 'Ticket description',
-    `stock_initial` INT NOT NULL DEFAULT 0 COMMENT 'Initial stock quantity',
-    `stock_available` INT NOT NULL DEFAULT 0 COMMENT 'Current available stock',
-    `is_stock_prepared` BOOLEAN NOT NULL DEFAULT 0 COMMENT 'Indicates if stock is pre-warmed',
-    `price_original` DECIMAL(12,2) NOT NULL COMMENT 'Original ticket price',
-    `price_flash` DECIMAL(12,2) NOT NULL COMMENT 'Discounted price during flash sale',
-    `sale_start_time` DATETIME NOT NULL COMMENT 'Flash sale start time',
-    `sale_end_time` DATETIME NOT NULL COMMENT 'Flash sale end time',
-    `status` INT NOT NULL DEFAULT 0 COMMENT 'Ticket status',
-    `activity_id` BIGINT NOT NULL COMMENT 'ID of associated activity',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID loại vé',
+    `name` VARCHAR(100) NOT NULL COMMENT 'Tên loại vé',
+    `description` TEXT NULL COMMENT 'Mô tả loại vé',
+    `stock_initial` INT NOT NULL DEFAULT 0 COMMENT 'Số lượng vé ban đầu',
+    `stock_available` INT NOT NULL DEFAULT 0 COMMENT 'Số lượng vé còn lại',
+    `is_stock_prepared` BOOLEAN NOT NULL DEFAULT 0 COMMENT 'Đánh dấu kho vé đã được chuẩn bị trước',
+    `price_original` DECIMAL(12,2) NOT NULL COMMENT 'Giá vé gốc',
+    `price_flash` DECIMAL(12,2) NOT NULL COMMENT 'Giá vé trong chương trình flash sale',
+    `sale_start_time` DATETIME NOT NULL COMMENT 'Thời gian bắt đầu bán loại vé',
+    `sale_end_time` DATETIME NOT NULL COMMENT 'Thời gian kết thúc bán loại vé',
+    `status` TINYINT NOT NULL DEFAULT 0 COMMENT 'Trạng thái loại vé (0: Không hoạt động, 1: Đang hoạt động, 2: Hết vé, 3: Đã xóa)',
+    `version` BIGINT NOT NULL DEFAULT 0 COMMENT 'Version phục vụ optimistic locking',
+    `event_id` BIGINT NOT NULL COMMENT 'ID sự kiện mở bán vé',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời gian cập nhật gần nhất',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo loại vé',
     PRIMARY KEY (`id`),
-    KEY `idx_activity_id` (`activity_id`),
-    KEY `idx_status_sale_time` (`status`, `sale_start_time`, `sale_end_time`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng chi tiết loại vé';
+    KEY `idx_event_id` (`event_id`),
+    KEY `idx_status_sale_time` (`status`, `sale_start_time`, `sale_end_time`),
+    CONSTRAINT `fk_ticket_item_event`
+    FOREIGN KEY (`event_id`) REFERENCES `ticket_event` (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý các loại vé thuộc sự kiện';
 
--- 5. Bảng đơn hàng (ticket_order_202604)
+
+-- 5. BẢNG ĐƠN HÀNG (ticket_order_202604)
 CREATE TABLE IF NOT EXISTS `ticket_order_202604` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Unique ticket sales ID',
-    `user_id` BIGINT NOT NULL COMMENT 'userId',
-    `order_number` VARCHAR(50) NOT NULL COMMENT 'Unique order number',
-    `total_amount` DECIMAL(12,2) NOT NULL COMMENT 'Total payment amount',
-    `terminal_id` VARCHAR(20) NOT NULL COMMENT 'ID of the sales terminal',
-    `order_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date and time of ticket purchase',
-    `order_notes` VARCHAR(100) NULL DEFAULT 'None' COMMENT 'Additional notes',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`) USING BTREE,
-    UNIQUE KEY `order_number` (`order_number`),
-    KEY `order_date` (`order_date`),
-    KEY `index_usr_id` (`user_id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng đơn hàng';
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID đơn hàng',
+    `user_id` BIGINT NOT NULL COMMENT 'ID người dùng đặt vé',
+    `order_number` VARCHAR(50) NOT NULL COMMENT 'Mã đơn hàng duy nhất',
+    `total_amount` DECIMAL(12,2) NOT NULL COMMENT 'Tổng số tiền của đơn hàng',
+    `order_status` TINYINT NOT NULL DEFAULT 0 COMMENT 'Trạng thái đơn hàng (0: Chờ thanh toán, 1: Thành công, 2: Đã hủy, 3: Hết hạn)',
+    `order_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian đặt vé',
+    `expire_at` DATETIME NULL COMMENT 'Thời gian đơn hàng hết hạn thanh toán',
+    `order_notes` VARCHAR(255) NULL COMMENT 'Ghi chú đơn hàng',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời gian cập nhật gần nhất',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo đơn hàng',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_order_number` (`order_number`),
+    KEY `idx_order_date` (`order_date`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_status_expire_at` (`order_status`, `expire_at`),
+    CONSTRAINT `fk_order_user`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý đơn hàng';
 
--- 6. Bảng chi tiết đơn hàng (ticket_order_details_202604)
+
+-- 6. BẢNG CHI TIẾT ĐƠN HÀNG (ticket_order_details_202604)
 CREATE TABLE IF NOT EXISTS `ticket_order_details_202604` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Unique ticket sales ID',
-    `ticket_item_id` BIGINT NOT NULL COMMENT 'ticket detail ID',
-    `order_number` VARCHAR(50) NOT NULL COMMENT 'Reference to the order number',
-    `passenger_name` VARCHAR(100) NOT NULL COMMENT 'Passenger full name',
-    `passenger_id` VARCHAR(20) NOT NULL COMMENT 'National ID or passport number',
-    `departure_station` VARCHAR(10) NOT NULL COMMENT 'Departure station code',
-    `arrival_station` VARCHAR(10) NOT NULL COMMENT 'Arrival station code',
-    `departure_time` DATETIME NOT NULL COMMENT 'Train departure time',
-    `seat_class` ENUM('Economy', 'Business', 'First') NOT NULL COMMENT 'Seat class type',
-    `seat_number` VARCHAR(10) NOT NULL COMMENT 'Seat number',
-    `ticket_price` DECIMAL(12,2) NOT NULL COMMENT 'Price of individual ticket',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`) USING BTREE,
-    KEY `order_number` (`order_number`),
-    KEY `ticket_item_id` (`ticket_item_id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng chi tiết đơn hàng';
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID chi tiết đơn hàng',
+    `order_id` BIGINT NOT NULL COMMENT 'ID đơn hàng',
+    `ticket_item_id` BIGINT NOT NULL COMMENT 'ID loại vé',
+    `quantity` INT NOT NULL DEFAULT 1 COMMENT 'Số lượng vé',
+    `unit_price` DECIMAL(12,2) NOT NULL COMMENT 'Đơn giá vé tại thời điểm đặt',
+    `total_price` DECIMAL(12,2) NOT NULL COMMENT 'Tổng tiền của chi tiết đơn hàng',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời gian cập nhật gần nhất',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo chi tiết đơn hàng',
+    PRIMARY KEY (`id`),
+    KEY `idx_order_id` (`order_id`),
+    KEY `idx_ticket_item_id` (`ticket_item_id`),
+    CONSTRAINT `fk_order_detail_order`
+    FOREIGN KEY (`order_id`) REFERENCES `ticket_order_202604` (`id`),
+    CONSTRAINT `fk_order_detail_ticket_item`
+    FOREIGN KEY (`ticket_item_id`) REFERENCES `ticket_item` (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng chi tiết các vé trong đơn hàng';
 
--- 7. Bảng giao dịch thanh toán (payment_transaction)
+
+-- 7. BẢNG GIAO DỊCH THANH TOÁN (payment_transaction)
 CREATE TABLE IF NOT EXISTS `payment_transaction` (
-                                                     `id` BIGINT NOT NULL AUTO_INCREMENT,
-                                                     `payment_id` VARCHAR(64) NOT NULL COMMENT 'Mã thanh toán duy nhất (UUID)',
-    `order_number` VARCHAR(50) NOT NULL COMMENT 'Liên kết với bảng Order',
-    `user_id` BIGINT NOT NULL,
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID giao dịch',
+    `payment_id` VARCHAR(64) NOT NULL COMMENT 'Mã thanh toán duy nhất',
+    `order_id` BIGINT NOT NULL COMMENT 'ID đơn hàng liên kết',
+    `user_id` BIGINT NOT NULL COMMENT 'ID người dùng thực hiện thanh toán',
     `amount` DECIMAL(12,2) NOT NULL COMMENT 'Số tiền thanh toán',
-    `payment_method` VARCHAR(20) NOT NULL COMMENT 'VNPAY, MOMO, LINKED_BANK...',
-    `payment_status` TINYINT NOT NULL DEFAULT 0 COMMENT '0:INIT, 1:IN_PROGRESS, 2:SUCCESS, 3:FAILED',
-    `gateway_transaction_id` VARCHAR(100) NULL COMMENT 'Mã từ phía Ngân hàng trả về',
-    `payment_url` TEXT NULL COMMENT 'Link thanh toán trả về cho User',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `payment_method` VARCHAR(20) NOT NULL COMMENT 'Phương thức thanh toán (VNPAY, MOMO, LINKED_BANK...)',
+    `payment_status` TINYINT NOT NULL DEFAULT 0 COMMENT 'Trạng thái thanh toán (0: Khởi tạo, 1: Đang xử lý, 2: Thành công, 3: Thất bại, 4: Đã hoàn tiền)',
+    `gateway_transaction_id` VARCHAR(100) NULL COMMENT 'Mã giao dịch do cổng thanh toán trả về',
+    `payment_url` TEXT NULL COMMENT 'Đường dẫn thanh toán trả về cho người dùng',
+    `paid_at` DATETIME NULL COMMENT 'Thời gian thanh toán thành công',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời gian cập nhật gần nhất',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo giao dịch',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_payment_id` (`payment_id`),
-    KEY `idx_order_number` (`order_number`),
-    KEY `idx_user_id` (`user_id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng ghi nhận lịch sử thanh toán';
+    KEY `idx_order_id` (`order_id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_payment_status` (`payment_status`),
+    CONSTRAINT `fk_payment_order`
+    FOREIGN KEY (`order_id`) REFERENCES `ticket_order_202604` (`id`),
+    CONSTRAINT `fk_payment_user`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng lưu lịch sử giao dịch thanh toán';
 
--- 8. Bảng hàng đợi order (order_queue)
+
+-- 8. BẢNG HÀNG ĐỢI XỬ LÝ ĐƠN HÀNG (order_queue)
 CREATE TABLE IF NOT EXISTS `order_queue` (
-                                             `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                             `token` VARCHAR(64) NOT NULL UNIQUE,
-    `ticket_item_id` BIGINT NOT NULL,
-    `quantity` INT NOT NULL,
-    `user_id` BIGINT NOT NULL,
-    `status` TINYINT NOT NULL DEFAULT 0,
-    `order_number` VARCHAR(64) NULL,
-    `message` VARCHAR(255) NULL,
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng queue hàng đợi';
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID yêu cầu trong hàng đợi',
+    `token` VARCHAR(64) NOT NULL COMMENT 'Token duy nhất của yêu cầu đặt vé',
+    `ticket_item_id` BIGINT NOT NULL COMMENT 'ID loại vé cần đặt',
+    `quantity` INT NOT NULL COMMENT 'Số lượng vé cần đặt',
+    `user_id` BIGINT NOT NULL COMMENT 'ID người dùng đặt vé',
+    `status` TINYINT NOT NULL DEFAULT 0 COMMENT 'Trạng thái xử lý (0: Chờ xử lý, 1: Thành công, 2: Thất bại)',
+    `order_id` BIGINT NULL COMMENT 'ID đơn hàng được tạo sau khi xử lý',
+    `message` VARCHAR(255) NULL COMMENT 'Thông báo kết quả xử lý',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo yêu cầu',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời gian cập nhật gần nhất',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_queue_token` (`token`),
+    KEY `idx_queue_status` (`status`),
+    KEY `idx_queue_ticket_item` (`ticket_item_id`),
+    KEY `idx_queue_user` (`user_id`),
+    CONSTRAINT `fk_queue_ticket_item`
+    FOREIGN KEY (`ticket_item_id`) REFERENCES `ticket_item` (`id`),
+    CONSTRAINT `fk_queue_user`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    CONSTRAINT `fk_queue_order`
+    FOREIGN KEY (`order_id`) REFERENCES `ticket_order_202604` (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng hàng đợi xử lý yêu cầu đặt vé';
 
--- 9. Bảng Outbox pattern (outbox_event)
+
+-- 9. BẢNG OUTBOX EVENT (outbox_event)
 CREATE TABLE IF NOT EXISTS `outbox_event` (
-                                              `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                              `aggregate_id` VARCHAR(64) NOT NULL COMMENT 'Token của order — dùng để idempotency check',
-    `event_type` VARCHAR(64) NOT NULL COMMENT 'Loại event (VD: ORDER_PLACED)',
-    `payload` JSON NOT NULL COMMENT 'JSON của PlaceOrderMQMessage',
-    `status` TINYINT NOT NULL DEFAULT 0 COMMENT '0=PENDING, 1=PUBLISHED',
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `published_at` DATETIME NULL COMMENT 'Thời điểm Kafka Broker ACK thành công',
-    INDEX `idx_status_created` (`status`, `created_at`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng Outbox Event cho Kafka';
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID sự kiện',
+    `aggregate_id` VARCHAR(64) NOT NULL COMMENT 'ID đối tượng nghiệp vụ liên quan đến sự kiện',
+    `aggregate_type` VARCHAR(64) NOT NULL COMMENT 'Loại aggregate, ví dụ TICKET_ORDER',
+    `event_type` VARCHAR(64) NOT NULL COMMENT 'Loại sự kiện nghiệp vụ, ví dụ ORDER_PLACED',
+    `payload` JSON NOT NULL COMMENT 'Dữ liệu sự kiện dưới dạng JSON',
+    `status` TINYINT NOT NULL DEFAULT 0 COMMENT 'Trạng thái sự kiện (0: Chờ gửi, 1: Đã gửi, 2: Gửi thất bại)',
+    `retry_count` INT NOT NULL DEFAULT 0 COMMENT 'Số lần thử gửi lại sự kiện',
+    `next_retry_at` DATETIME NULL COMMENT 'Thời gian thử gửi lại tiếp theo',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo sự kiện',
+    `published_at` DATETIME NULL COMMENT 'Thời gian Kafka xác nhận sự kiện đã được gửi thành công',
+    PRIMARY KEY (`id`),
+    KEY `idx_status_created` (`status`, `created_at`),
+    KEY `idx_status_retry` (`status`, `next_retry_at`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng Outbox lưu sự kiện chờ gửi đến Kafka';
 
--- 10. Bảng Chống trùng lặp Consumer (idempotency_key)
+
+-- 10. BẢNG CHỐNG XỬ LÝ TRÙNG LẶP (idempotency_key)
 CREATE TABLE IF NOT EXISTS `idempotency_key` (
-                                                 `token` VARCHAR(64) NOT NULL COMMENT 'Unique token từ PlaceOrderMQMessage',
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `expires_at` DATETIME NOT NULL COMMENT 'TTL — dùng cho cleanup job',
+    `token` VARCHAR(64) NOT NULL COMMENT 'Token duy nhất của yêu cầu đặt vé',
+    `user_id` BIGINT NOT NULL COMMENT 'ID người dùng gửi yêu cầu',
+    `request_hash` VARCHAR(64) NULL COMMENT 'Hash của request để kiểm tra request bị thay đổi',
+    `order_id` BIGINT NULL COMMENT 'ID đơn hàng được tạo bởi request',
+    `status` TINYINT NOT NULL DEFAULT 0 COMMENT 'Trạng thái request (0: Đang xử lý, 1: Thành công, 2: Thất bại)',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời gian tạo idempotency key',
+    `expires_at` DATETIME NOT NULL COMMENT 'Thời gian hết hạn của idempotency key',
     PRIMARY KEY (`token`),
-    KEY `idx_idempotency_expires_at` (`expires_at`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng Idempotency Key chống retry trùng Kafka';
+    KEY `idx_idempotency_user` (`user_id`),
+    KEY `idx_idempotency_expires_at` (`expires_at`),
+    CONSTRAINT `fk_idempotency_user`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    CONSTRAINT `fk_idempotency_order`
+    FOREIGN KEY (`order_id`) REFERENCES `ticket_order_202604` (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng lưu khóa chống xử lý trùng lặp';
 
--- ========================================================
+
 -- INSERT MOCK DATA
--- ========================================================
 
--- Insert ticket events
-INSERT INTO `ticket` (`name`, `description`, `start_time`, `end_time`, `status`, `updated_at`, `created_at`)
+-- Dữ liệu mẫu người dùng
+INSERT INTO `users`
+(`id`, `username`, `email`, `phone`, `password`, `full_name`, `status`, `role`)
 VALUES
-    ('Đợt Mở Bán Vé Ngày 12/12', 'Sự kiện mở bán vé đặc biệt cho ngày 12/12', '2024-12-12 00:00:00', '2024-12-12 23:59:59', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Đợt Mở Bán Vé Ngày 01/01', 'Sự kiện mở bán vé cho ngày đầu năm mới 01/01', '2025-01-01 00:00:00', '2025-01-01 23:59:59', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    (1001, 'nguyenvana', 'nguyenvana@example.com', '0901234567', '$2a$10$examplePasswordHash', 'Nguyễn Văn A', 1, 'CUSTOMER'),
+    (1002, 'admin', 'admin@example.com', '0901234568', '$2a$10$examplePasswordHash', 'Quản trị viên', 1, 'ADMIN');
 
--- Insert ticket items
-INSERT INTO `ticket_item` (`name`, `description`, `stock_initial`, `stock_available`, `is_stock_prepared`, `price_original`, `price_flash`, `sale_start_time`, `sale_end_time`, `status`, `activity_id`, `updated_at`, `created_at`)
+
+-- Dữ liệu mẫu sự kiện
+INSERT INTO `ticket_event`
+(`name`, `description`, `start_time`, `end_time`, `status`)
 VALUES
-    ('Vé Sự Kiện 12/12 - Hạng Phổ Thông', 'Vé phổ thông cho sự kiện ngày 12/12', 1000, 1000, 0, 100000.00, 10000.00, '2024-12-12 00:00:00', '2024-12-12 23:59:59', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Vé Sự Kiện 12/12 - Hạng VIP', 'Vé VIP cho sự kiện ngày 12/12', 500, 500, 0, 200000.00, 15000.00, '2024-12-12 00:00:00', '2024-12-12 23:59:59', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Vé Sự Kiện 01/01 - Hạng Phổ Thông', 'Vé phổ thông cho sự kiện ngày 01/01', 2000, 2000, 0, 100000.00, 10000.00, '2025-01-01 00:00:00', '2025-01-01 23:59:59', 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Vé Sự Kiện 01/01 - Hạng VIP', 'Vé VIP cho sự kiện ngày 01/01', 1000, 1000, 0, 200000.00, 15000.00, '2025-01-01 00:00:00', '2025-01-01 23:59:59', 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    ('Flash Sale Vé 12/12', 'Đợt mở bán vé flash sale ngày 12/12', '2026-12-12 00:00:00', '2026-12-12 23:59:59', 1),
+    ('Flash Sale Vé Năm Mới', 'Đợt mở bán vé đặc biệt đầu năm mới', '2027-01-01 00:00:00', '2027-01-01 23:59:59', 1);
 
--- Insert order
-INSERT INTO `ticket_order_202604` (`order_number`, `user_id`, `total_amount`, `terminal_id`, `order_date`, `order_notes`)
-VALUES ('ORD2025020001', 1001, 5600.00, 'POS001', '2025-02-28 10:00:00', 'Family trip');
 
--- Insert order details
-INSERT INTO `ticket_order_details_202604` (`ticket_item_id`, `order_number`, `passenger_name`, `passenger_id`, `departure_station`, `arrival_station`, `departure_time`, `seat_class`, `seat_number`, `ticket_price`)
+-- Dữ liệu mẫu loại vé
+INSERT INTO `ticket_item`
+(`name`, `description`, `stock_initial`, `stock_available`, `is_stock_prepared`,
+ `price_original`, `price_flash`, `sale_start_time`, `sale_end_time`,
+ `status`, `version`, `event_id`)
 VALUES
-    (4, 'ORD2025020001', 'Nguyen Van A', 'ID12345678', 'SGN', 'HAN', '2025-03-01 08:00:00', 'Economy', 'A1', 1400.00),
-    (4, 'ORD2025020001', 'Nguyen Van B', 'ID12345679', 'SGN', 'HAN', '2025-03-01 08:00:00', 'Economy', 'A2', 1400.00),
-    (4, 'ORD2025020001', 'Nguyen Van C', 'ID12345680', 'SGN', 'HAN', '2025-03-01 08:00:00', 'Economy', 'A3', 1400.00),
-    (4, 'ORD2025020001', 'Nguyen Van D', 'ID12345681', 'SGN', 'HAN', '2025-03-01 08:00:00', 'Economy', 'A4', 1400.00);
+    ('Vé 12/12 - Hạng Phổ Thông', 'Vé phổ thông cho sự kiện ngày 12/12', 1000, 1000, 1,
+     100000.00, 10000.00, '2026-12-12 00:00:00', '2026-12-12 23:59:59',
+     1, 0, 1),
+
+    ('Vé 12/12 - Hạng VIP', 'Vé VIP cho sự kiện ngày 12/12', 500, 500, 1,
+     200000.00, 15000.00, '2026-12-12 00:00:00', '2026-12-12 23:59:59',
+     1, 0, 1),
+
+    ('Vé Năm Mới - Hạng Phổ Thông', 'Vé phổ thông cho sự kiện đầu năm mới', 2000, 2000, 1,
+     100000.00, 10000.00, '2027-01-01 00:00:00', '2027-01-01 23:59:59',
+     1, 0, 2),
+
+    ('Vé Năm Mới - Hạng VIP', 'Vé VIP cho sự kiện đầu năm mới', 1000, 1000, 1,
+     200000.00, 15000.00, '2027-01-01 00:00:00', '2027-01-01 23:59:59',
+     1, 0, 2);
+
+
+-- Dữ liệu mẫu đơn hàng
+INSERT INTO `ticket_order_202604`
+(`user_id`, `order_number`, `total_amount`, `order_status`, `order_date`, `expire_at`, `order_notes`)
+VALUES
+    (1001, 'ORD202609250001', 30000.00, 1, '2026-09-25 10:00:00', NULL, 'Đặt vé flash sale');

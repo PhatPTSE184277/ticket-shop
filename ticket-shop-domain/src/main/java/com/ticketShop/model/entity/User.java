@@ -15,10 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users", indexes = {
-        @Index(name = "idx_email", columnList = "email"),
-        @Index(name = "idx_phone", columnList = "phone")
-})
+@Table(name = "users")
 public class User {
 
     @Id
@@ -34,10 +31,10 @@ public class User {
     @Column(name = "email", length = 100, nullable = false, unique = true)
     private String email;
 
-    @Column(name = "phone", length = 20)
+    @Column(name = "phone", length = 20, nullable = false, unique = true)
     private String phone;
 
-    @Column(name = "full_name", length = 100)
+    @Column(name = "full_name", length = 100, nullable = false)
     private String fullName;
 
     // 0=INACTIVE, 1=ACTIVE, 2=BLOCKED
