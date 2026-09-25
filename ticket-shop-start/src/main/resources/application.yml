@@ -6,6 +6,8 @@ server:
       min-spare: 50
     #    max-connections: 8000
     accept-count: 20000
+  servlet:
+    context-path: /api
 
 
 spring:

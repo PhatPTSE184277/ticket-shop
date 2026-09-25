@@ -205,15 +205,25 @@ INSERT INTO `users`
 (`id`, `username`, `email`, `phone`, `password`, `full_name`, `status`, `role`)
 VALUES
     (1001, 'nguyenvana', 'nguyenvana@example.com', '0901234567', '$2a$10$examplePasswordHash', 'Nguyễn Văn A', 1, 'CUSTOMER'),
-    (1002, 'admin', 'admin@example.com', '0901234568', '$2a$10$examplePasswordHash', 'Quản trị viên', 1, 'ADMIN');
+    (1002, 'nguyenstaff', 'staff@example.com', '0901234568', '$2a$10$examplePasswordHash', 'Nguyễn Văn Staff', 1, 'STAFF'),
+    (1003, 'admin', 'admin@example.com', '0901234569', '$2a$10$examplePasswordHash', 'Quản trị viên', 1, 'ADMIN');
 
 
 -- Dữ liệu mẫu sự kiện
 INSERT INTO `ticket_event`
 (`name`, `description`, `start_time`, `end_time`, `status`)
 VALUES
-    ('Flash Sale Vé 12/12', 'Đợt mở bán vé flash sale ngày 12/12', '2026-12-12 00:00:00', '2026-12-12 23:59:59', 1),
-    ('Flash Sale Vé Năm Mới', 'Đợt mở bán vé đặc biệt đầu năm mới', '2027-01-01 00:00:00', '2027-01-01 23:59:59', 1);
+    ('Flash Sale Vé 12/12',
+     'Đợt mở bán vé flash sale ngày 12/12',
+     '2026-12-12 00:00:00',
+     '2026-12-12 23:59:59',
+     0),
+
+    ('Flash Sale Vé Năm Mới',
+     'Đợt mở bán vé đặc biệt đầu năm mới',
+     '2027-01-01 00:00:00',
+     '2027-01-01 23:59:59',
+     0);
 
 
 -- Dữ liệu mẫu loại vé
@@ -222,25 +232,56 @@ INSERT INTO `ticket_item`
  `price_original`, `price_flash`, `sale_start_time`, `sale_end_time`,
  `status`, `version`, `event_id`)
 VALUES
-    ('Vé 12/12 - Hạng Phổ Thông', 'Vé phổ thông cho sự kiện ngày 12/12', 1000, 1000, 1,
-     100000.00, 10000.00, '2026-12-12 00:00:00', '2026-12-12 23:59:59',
-     1, 0, 1),
+    ('Vé 12/12 - Hạng Phổ Thông',
+     'Vé phổ thông cho sự kiện ngày 12/12',
+     1000, 1000, 1,
+     100000.00, 10000.00,
+     '2026-12-12 00:00:00',
+     '2026-12-12 23:59:59',
+     0, 0, 1),
 
-    ('Vé 12/12 - Hạng VIP', 'Vé VIP cho sự kiện ngày 12/12', 500, 500, 1,
-     200000.00, 15000.00, '2026-12-12 00:00:00', '2026-12-12 23:59:59',
-     1, 0, 1),
+    ('Vé 12/12 - Hạng VIP',
+     'Vé VIP cho sự kiện ngày 12/12',
+     500, 500, 1,
+     200000.00, 15000.00,
+     '2026-12-12 00:00:00',
+     '2026-12-12 23:59:59',
+     0, 0, 1),
 
-    ('Vé Năm Mới - Hạng Phổ Thông', 'Vé phổ thông cho sự kiện đầu năm mới', 2000, 2000, 1,
-     100000.00, 10000.00, '2027-01-01 00:00:00', '2027-01-01 23:59:59',
-     1, 0, 2),
+    ('Vé Năm Mới - Hạng Phổ Thông',
+     'Vé phổ thông cho sự kiện đầu năm mới',
+     2000, 2000, 1,
+     100000.00, 10000.00,
+     '2027-01-01 00:00:00',
+     '2027-01-01 23:59:59',
+     0, 0, 2),
 
-    ('Vé Năm Mới - Hạng VIP', 'Vé VIP cho sự kiện đầu năm mới', 1000, 1000, 1,
-     200000.00, 15000.00, '2027-01-01 00:00:00', '2027-01-01 23:59:59',
-     1, 0, 2);
+    ('Vé Năm Mới - Hạng VIP',
+     'Vé VIP cho sự kiện đầu năm mới',
+     1000, 1000, 1,
+     200000.00, 15000.00,
+     '2027-01-01 00:00:00',
+     '2027-01-01 23:59:59',
+     0, 0, 2);
 
 
 -- Dữ liệu mẫu đơn hàng
 INSERT INTO `ticket_order_202604`
-(`user_id`, `order_number`, `total_amount`, `order_status`, `order_date`, `expire_at`, `order_notes`)
+(`user_id`, `order_number`, `total_amount`, `order_status`,
+ `order_date`, `expire_at`, `order_notes`)
 VALUES
-    (1001, 'ORD202609250001', 30000.00, 1, '2026-09-25 10:00:00', NULL, 'Đặt vé flash sale');
+    (1001,
+     'ORD202609250001',
+     30000.00,
+     1,
+     '2026-09-25 10:00:00',
+     NULL,
+     'Đặt vé flash sale');
+
+
+-- Dữ liệu mẫu chi tiết đơn hàng
+INSERT INTO `ticket_order_details_202604`
+(`order_id`, `ticket_item_id`, `quantity`, `unit_price`, `total_price`)
+VALUES
+    (1, 1, 2, 10000.00, 20000.00),
+    (1, 2, 1, 10000.00, 10000.00);
