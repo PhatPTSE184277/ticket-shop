@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.mapping.Map;
+
+import java.util.List;
+import java.util.Map;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -72,6 +74,28 @@ public class RedisInfraServiceImpl implements RedisInfraService {
             }
         }
         return null;
+    }
+
+    @Override
+    public <T> List<T> getList(String key, Class<T> targetClass) {
+        Object result = redisTemplate.opsForValue().get(key);
+
+        if (result == null) {
+            return null;
+        }
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            return objectMapper.convertValue(
+                    result,
+                    objectMapper.getTypeFactory()
+                            .constructCollectionType(List.class, targetClass)
+            );
+        } catch (IllegalArgumentException e) {
+            log.error("getList error: key={}, error={}", key, e.getMessage(), e);
+            return null;
+        }
     }
 
     @Override

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/ticket")
 @Slf4j
@@ -24,7 +26,7 @@ public class TicketItemController {
      */
     @GetMapping("/{ticketId}")
     @Operation(summary = "Get ticket item by ID")
-    public ResultMessage<TicketItemResponse> getTicketDetailById(
+    public ResultMessage<TicketItemResponse> getTicketItemById(
             @Parameter(required = true)
             @PathVariable("ticketId") Long ticketId,
 
@@ -33,6 +35,24 @@ public class TicketItemController {
     ) {
         return ResultUtil.data(
                 ticketItemAppService.getTicketItemById(ticketId, version)
+        );
+    }
+
+    /**
+     * Get all ticket items by event ID
+     *
+     * GET /api/ticket/event/{eventId}/items
+     */
+    @GetMapping("/event/{eventId}/items")
+    @Operation(summary = "Get ticket items by event ID")
+    public ResultMessage<List<TicketItemResponse>> getTicketItemsByEventId(
+
+            @Parameter(required = true)
+            @PathVariable("eventId")
+            Long eventId
+    ) {
+        return ResultUtil.data(
+                ticketItemAppService.getTicketItemsByEventId(eventId)
         );
     }
 }

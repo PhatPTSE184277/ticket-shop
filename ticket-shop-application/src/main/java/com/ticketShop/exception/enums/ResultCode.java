@@ -3,7 +3,7 @@ package com.ticketShop.exception.enums;
 /**
  * Trả về mã trạng thái
  * Chữ số đầu tiên: 1: Vé; 2: Người dùng; 3: Giao dịch,
- * 4: Khuyến mãi, 5: Cửa hàng, 6: Trang web, 7: Cài đặt, 8: Khác
+ * 4: Sự kiện, 5: Cửa hàng, 6: Trang web, 7: Cài đặt, 8: Khác
  *
  * @author tanphat
  */
@@ -44,8 +44,14 @@ public enum ResultCode {
     /**
      * Vé
      */
-        TICKET_DETAIL_NOT_EXIST(11001, "Vé không tồn tại"),
+        TICKET_ITEM_NOT_EXIST(11001, "Vé không tồn tại"),
+
+    /**
+     * Sự kiện
+     */
+        EVENT_NOT_EXIST(41001, "Sự kiện không tồn tại"),
     ;
+
 
 
 

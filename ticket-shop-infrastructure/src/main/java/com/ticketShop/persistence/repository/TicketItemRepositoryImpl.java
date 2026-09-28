@@ -19,4 +19,9 @@ public class TicketItemRepositoryImpl implements TicketItemRepository {
         return ticketItemJPAMapper.findById(id);
     }
 
+    @Override
+    public List<TicketItem> findByEventId(Long eventId) {
+        return ticketItemJPAMapper.findByEventId(eventId);
+    }
+
 }

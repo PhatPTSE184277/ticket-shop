@@ -6,6 +6,8 @@ import com.ticketShop.service.TicketItemDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TicketItemDomainServiceImpl implements TicketItemDomainService {
     @Autowired
@@ -14,5 +16,10 @@ public class TicketItemDomainServiceImpl implements TicketItemDomainService {
     @Override
     public TicketItem getTicketItemById(Long id) {
         return ticketItemRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<TicketItem> getTicketItemsByEventId(Long eventId) {
+        return ticketItemRepository.findByEventId(eventId);
     }
 }
