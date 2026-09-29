@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class TicketItemMapper {
 
+    /**
+     * Entity → Response
+     */
     public TicketItemResponse toResponse(TicketItem ticketItem) {
 
         if (ticketItem == null) {
@@ -16,7 +19,21 @@ public class TicketItemMapper {
 
         TicketItemResponse response = new TicketItemResponse();
 
-        BeanUtils.copyProperties(ticketItem, response);
+        response.setId(ticketItem.getId());
+        response.setName(ticketItem.getName());
+        response.setDescription(ticketItem.getDescription());
+        response.setStockInitial(ticketItem.getStockInitial());
+        response.setStockAvailable(ticketItem.getStockAvailable());
+        response.setStockPrepared(ticketItem.isStockPrepared());
+        response.setPriceOriginal(ticketItem.getPriceOriginal());
+        response.setPriceFlash(ticketItem.getPriceFlash());
+        response.setSaleStartTime(ticketItem.getSaleStartTime());
+        response.setSaleEndTime(ticketItem.getSaleEndTime());
+        response.setStatus(ticketItem.getStatus());
+        response.setVersion(ticketItem.getVersion());
+        response.setEventId(ticketItem.getEventId());
+        response.setUpdatedAt(ticketItem.getUpdatedAt());
+        response.setCreatedAt(ticketItem.getCreatedAt());
 
         return response;
     }
