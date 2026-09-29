@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ticket")
+    @RequestMapping("/ticket")
 @Slf4j
 public class TicketItemController {
     @Autowired

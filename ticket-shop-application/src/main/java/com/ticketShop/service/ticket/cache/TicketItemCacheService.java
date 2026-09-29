@@ -80,20 +80,21 @@ public class TicketItemCacheService {
     /**
      * get ticket from database
      */
-    public TicketItemCache getTicketItemDatabase(Long id){
+    public TicketItemCache getTicketItemDatabase(Long id) {
         RedisDistributedLocker locker = redisDistributedService.getDistributedLock(genEventItemKeyLock(id));
+        boolean isLock = false;
         try {
             // 1 - Tao lock
-            boolean isLock = locker.tryLock(1, 5, TimeUnit.SECONDS);
+            isLock = locker.tryLock(1, 5, TimeUnit.SECONDS);
             // Lưu ý: Cho dù thành công hay không cũng phải unLock, bằng mọi giá.
-            if(!isLock){
+            if (!isLock) {
                 return null; //return retry
             }
 
             // Get cache
             TicketItemCache ticketItemCache = redisInfraService.getObject(genEventItemKey(id), TicketItemCache.class);
             //2. YES
-            if (ticketItemCache != null){
+            if (ticketItemCache != null) {
                 return ticketItemCache;
             }
             TicketItem ticketItem = ticketItemDomainService.getTicketItemById(id);
@@ -105,10 +106,12 @@ public class TicketItemCacheService {
             redisInfraService.setObject(genEventItemKey(id), ticketItemCache);
             return ticketItemCache;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
-        }finally {
-            locker.unlock();
+        } finally {
+            if (isLock) {
+                locker.unlock();
+            }
         }
     }
 
@@ -195,13 +198,12 @@ public class TicketItemCacheService {
     /**
      * get ticket items from database
      */
-    public List<TicketItemCache> getTicketItemsByEventDatabase(Long eventId){
+    public List<TicketItemCache> getTicketItemsByEventDatabase(Long eventId) {
         RedisDistributedLocker locker = redisDistributedService.getDistributedLock(genEventKeyLock(eventId));
         boolean isLock = false;
-
         try {
             isLock = locker.tryLock(1, 5, TimeUnit.SECONDS);
-            if(!isLock){
+            if (!isLock) {
                 return null;
             }
 
@@ -224,15 +226,17 @@ public class TicketItemCacheService {
 
             redisInfraService.setObject(genEventListKey(eventId), ticketItemCaches);
             return ticketItemCaches;
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(
                     "GET TICKET ITEMS FROM DATABASE ERROR - eventId: {}",
                     eventId,
                     e
             );
             throw new RuntimeException(e);
-        }finally {
-            locker.unlock();
+        } finally {
+            if (isLock) {
+                locker.unlock();
+            }
         }
     }
 

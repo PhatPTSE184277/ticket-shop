@@ -1,7 +1,7 @@
 package com.ticketShop.service.ticket.cache;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.ticketShop.cache.RedisInfraService;
 import com.ticketShop.distributed.redisson.RedisDistributedLocker;
 import com.ticketShop.distributed.redisson.RedisDistributedService;
@@ -34,9 +34,15 @@ public class TicketEventCacheService {
     private static final String ACTIVE_EVENTS_LOCK_KEY = "PRO_LOCK_KEY_EVENT:ACTIVE";
 
     //guava
-    private static final Cache<String, List<TicketEvent>> localCache = CacheBuilder.newBuilder()
+//    private static final Cache<String, List<TicketEvent>> localCache = CacheBuilder.newBuilder()
+//            .initialCapacity(1)
+//            .concurrencyLevel(4)
+//            .expireAfterWrite(5, TimeUnit.MINUTES)
+//            .build();
+
+    //caffein
+    private static final Cache<String, List<TicketEvent>> localCache = Caffeine.newBuilder()
             .initialCapacity(1)
-            .concurrencyLevel(4)
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build();
 
@@ -47,7 +53,7 @@ public class TicketEventCacheService {
                 localCache.getIfPresent(ACTIVE_EVENTS_KEY);
 
         if (ticketEvents != null && !ticketEvents.isEmpty()) {
-            log.info("GET ACTIVE EVENTS FROM LOCAL CACHE");
+//            log.info("GET ACTIVE EVENTS FROM LOCAL CACHE");
             return ticketEvents;
         }
 
@@ -58,31 +64,43 @@ public class TicketEventCacheService {
     private List<TicketEvent> getActiveTicketEventsDistributedCache() {
         List<TicketEvent> ticketEvents = redisInfraService.getList(ACTIVE_EVENTS_KEY, TicketEvent.class);
 
-        if (ticketEvents == null || ticketEvents.isEmpty()) {
+        if (ticketEvents == null || ticketEvents.isEmpty()) {;
             ticketEvents = getActiveTicketEventsDatabase();
         }
 
         if (ticketEvents != null && !ticketEvents.isEmpty()) {
+            log.info("GET ACTIVE EVENTS FROM DISTRIBUTED CACHE");
             localCache.put(ACTIVE_EVENTS_KEY, ticketEvents);
         }
 
         return ticketEvents;
     }
 
-    private List<TicketEvent> getActiveTicketEventsDatabase(){
+    private List<TicketEvent> getActiveTicketEventsDatabase() {
         RedisDistributedLocker locker = redisDistributedService.getDistributedLock(ACTIVE_EVENTS_LOCK_KEY);
         boolean isLock = false;
-
         try {
-            isLock = locker.tryLock(1, 5, TimeUnit.SECONDS);
+            isLock = locker.tryLock(3, 5, TimeUnit.SECONDS);
             if (!isLock) {
+                log.warn("FAILED TO ACQUIRE ACTIVE EVENTS LOCK");
+
+                List<TicketEvent> ticketEvents =
+                        redisInfraService.getList(
+                                ACTIVE_EVENTS_KEY,
+                                TicketEvent.class
+                        );
+
+                if (ticketEvents != null && !ticketEvents.isEmpty()) {
+                    return ticketEvents;
+                }
+
                 return null;
             }
 
             // Double check Redis
             List<TicketEvent> ticketEvents = redisInfraService.getList(ACTIVE_EVENTS_KEY, TicketEvent.class);
 
-            if (ticketEvents != null && ! ticketEvents.isEmpty()) {
+            if (ticketEvents != null && !ticketEvents.isEmpty()) {
                 log.info("GET ACTIVE EVENTS FROM DISTRIBUTED CACHE");
                 return ticketEvents;
             }
@@ -97,21 +115,23 @@ public class TicketEventCacheService {
             // Redis
             redisInfraService.setObject(ACTIVE_EVENTS_KEY, ticketEvents);
             return ticketEvents;
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(
                     "GET ACTIVE EVENTS FROM DATABASE ERROR",
                     e
             );
 
             throw new RuntimeException(e);
-        }finally {
-            locker.unlock();
+        } finally {
+            if (isLock) {
+                locker.unlock();
+            }
         }
     }
 
     public void invalidateActiveTicketEvents(){
         localCache.invalidate(ACTIVE_EVENTS_KEY);
-        redisInfraService.delete(ACTIVE_EVENTS_LOCK_KEY);
+        redisInfraService.delete(ACTIVE_EVENTS_KEY);
         log.info("INVALIDATE ACTIVE EVENTS CACHE");
     }
 }

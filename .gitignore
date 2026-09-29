@@ -62,3 +62,6 @@ Desktop.ini
 *.temp
 *.swp
 *.swo
+
+### Benchmark ###
+benchmark/

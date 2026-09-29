@@ -17,7 +17,6 @@ public class TicketEventDomainServiceImpl implements TicketEventDomainService {
 
     @Override
     public List<TicketEvent> getAllActiveTicketEvents() {
-        log.info("Domain Service: Getting all active ticket events");
         return ticketEventRepository.findAllActive();
     }
 }

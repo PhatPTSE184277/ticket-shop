@@ -12,3 +12,7 @@ Remove-Item -Recurse -Force environment/data/db_data -ErrorAction SilentlyContin
 
 # 3. Khởi chạy lại hệ thống
 docker compose --env-file .env -f environment/docker-compose-dev.yml up -d
+
+# Test
+.\hey.exe -n 50000 -c 200 http://localhost:8080/api/ticket/event/active
+

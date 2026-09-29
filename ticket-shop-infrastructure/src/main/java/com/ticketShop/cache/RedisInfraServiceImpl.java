@@ -19,6 +19,9 @@ public class RedisInfraServiceImpl implements RedisInfraService {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
     @Override
     public void setString(String key, String value) {
         if (!StringUtils.hasLength(key)){ //null or ''
@@ -85,8 +88,6 @@ public class RedisInfraServiceImpl implements RedisInfraService {
         }
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
             return objectMapper.convertValue(
                     result,
                     objectMapper.getTypeFactory()

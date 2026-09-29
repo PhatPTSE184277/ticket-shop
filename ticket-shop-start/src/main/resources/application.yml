@@ -68,9 +68,9 @@ resilience4j:
   ratelimiter:
     instances:
       backendA:
-        limitForPeriod: 2
-        limitRefreshPeriod: 10s
-        timeoutDuration: 0
+        limitForPeriod: 200        # Cho phép tối đa 200 request
+        limitRefreshPeriod: 1s     # Trong mỗi 1 giây
+        timeoutDuration: 1000ms    # Cho phép request chờ tối đa 1s nếu bị xếp hàng
         registerHealthIndicator: true
         eventConsumerBufferSize: 100
       backendB:
