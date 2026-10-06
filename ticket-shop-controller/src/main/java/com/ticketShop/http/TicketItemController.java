@@ -1,9 +1,13 @@
 package com.ticketShop.http;
 
+import com.ticketShop.dto.CreateTicketItemRequest;
+import com.ticketShop.mapper.TicketItemControllerMapper;
+import com.ticketShop.model.command.CreateTicketItemCommand;
 import com.ticketShop.model.dto.TicketItemDTO;
 import com.ticketShop.model.enums.ResultUtil;
 import com.ticketShop.model.vo.ResultMessage;
 import com.ticketShop.service.ticket.TicketItemAppService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +17,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 
 @RestController
-    @RequestMapping("/ticket")
+    @RequestMapping("/ticket/item")
 @Slf4j
 public class TicketItemController {
     @Autowired
@@ -54,5 +58,18 @@ public class TicketItemController {
         return ResultUtil.data(
                 ticketItemAppService.getTicketItemsByEventId(eventId)
         );
+    }
+
+    @PostMapping("/create")
+    public ResultMessage<TicketItemDTO> createTicketItem(@Valid @RequestBody CreateTicketItemRequest request){
+        log.info("Creating ticket item: {}", request.getName());
+
+        // Map request -> command
+        CreateTicketItemCommand ticketItemCommand = TicketItemControllerMapper.toItemCommand(request);
+
+        // Gọi service xử lý nghiệp vụ
+        TicketItemDTO ticketItemDTO = ticketItemAppService.createTicketItem(ticketItemCommand);
+
+        return ResultUtil.data(ticketItemDTO);
     }
 }

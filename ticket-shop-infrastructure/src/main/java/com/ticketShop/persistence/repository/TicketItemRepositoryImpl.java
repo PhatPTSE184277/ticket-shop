@@ -33,4 +33,10 @@ public class TicketItemRepositoryImpl implements TicketItemRepository {
     }
 
 
+    //Check
+    @Override
+    public boolean existsByEventIdAndName(Long eventId, String name) {
+        return ticketItemJPAMapper.existsByEventIdAndName(eventId, name);
+    }
+
 }

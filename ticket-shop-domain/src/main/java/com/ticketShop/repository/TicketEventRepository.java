@@ -15,5 +15,8 @@ public interface TicketEventRepository {
      */
     TicketEvent save(TicketEvent ticketEvent);
 
+
+    //Check
     boolean existsByNameAndStartTimeAndEndTime(String name, LocalDateTime startTime, LocalDateTime endTime);
+    boolean existsById(Long id);
 }

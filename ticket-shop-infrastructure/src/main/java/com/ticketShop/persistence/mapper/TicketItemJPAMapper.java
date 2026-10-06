@@ -10,4 +10,8 @@ public interface TicketItemJPAMapper extends JpaRepository<TicketItem, Long> {
     Optional<TicketItem> findById(Long id);
 
     List<TicketItem> findByEventId(Long eventId);;
+
+    //Check
+    boolean existsByEventIdAndName(Long eventId, String name);
+
 }

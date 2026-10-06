@@ -64,7 +64,7 @@ public class TicketEventAppServiceImpl implements TicketEventAppService {
         TicketEvent createdTicket = ticketEventDomainService.createTicket(ticketEvent, ticketItem);
 
         // 3. Write-Through Cache: set Redis ngay sau khi DB thành công
-        this.cacheTicketEven(ticketEvent);
+        this.cacheTicketEvent(ticketEvent);
         this.cacheTicketItem(ticketItem);// ticketItem đã có ID từ JPA save
 
         log.info("Created & cached ticket event ID: {}, ticketItem ID: {}",
@@ -77,9 +77,9 @@ public class TicketEventAppServiceImpl implements TicketEventAppService {
     // ========== CACHE METHODS ==========
 
     /**
-     * Cache Ticket entity vào Redis
+     * Cache Ticket Event entity vào Redis
      */
-    private void cacheTicketEven(TicketEvent ticketEvent){
+    private void cacheTicketEvent(TicketEvent ticketEvent){
         try {
             log.info("Caching ticket event ID: {}, name: {}", ticketEvent.getId(), ticketEvent.getName());
             if (ticketEvent.getId() != null) {
@@ -107,7 +107,7 @@ public class TicketEventAppServiceImpl implements TicketEventAppService {
     }
 
     /**
-     * Xóa cache TicketItem khi delete
+     * Xóa cache TicketEvent khi delete
      */
     private void evictTicketEventCache(TicketEvent ticketEvent){
         try {

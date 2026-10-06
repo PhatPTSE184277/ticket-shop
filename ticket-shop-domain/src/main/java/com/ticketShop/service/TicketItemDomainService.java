@@ -9,4 +9,6 @@ public interface TicketItemDomainService {
     TicketItem getTicketItemById(Long id);
 
     List<TicketItem> getTicketItemsByEventId(Long eventId);
+
+    TicketItem createTicketItem(TicketItem ticketItem);
 }

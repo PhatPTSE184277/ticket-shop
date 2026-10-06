@@ -1,12 +1,21 @@
 package com.ticketShop.validator;
 
 import com.ticketShop.model.entity.TicketItem;
+import com.ticketShop.repository.TicketEventRepository;
+import com.ticketShop.repository.TicketItemRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Component
 public class TicketItemValidator {
+    private final TicketItemRepository ticketItemRepository;
+    private final TicketEventRepository ticketEventRepository;
+
+    public TicketItemValidator(TicketItemRepository ticketItemRepository, TicketEventRepository ticketEventRepository) {
+        this.ticketItemRepository = ticketItemRepository;
+        this.ticketEventRepository = ticketEventRepository;
+    }
 
     public void validateTicketItemCreation(TicketItem ticketItem) {
         // Quy tắc 1: Tên hạng vé không được để trống
@@ -37,6 +46,24 @@ public class TicketItemValidator {
         if (ticketItem.getSaleStartTime() != null && ticketItem.getSaleEndTime() != null) {
             if (ticketItem.getSaleStartTime().isAfter(ticketItem.getSaleEndTime())) {
                 throw new IllegalArgumentException("Thời gian mở bán vé phải trước thời gian kết thúc bán vé");
+            }
+        }
+
+        // Quy tắc 6: Event ID không tồn tại
+        if (ticketItem.getEventId() != null) {
+            boolean exist = ticketEventRepository.existsById(ticketItem.getEventId());
+
+            if (!exist) {
+                throw new IllegalArgumentException("Sự kiện có ID " + ticketItem.getEventId() + " không tồn tại trên hệ thống");
+            }
+        }
+
+        // Quy tắc 7: Kiểm tra trùng tên hạng vé TRONG CÙNG 1 SỰ KIỆN (eventId)
+        if (ticketItem.getEventId() != null){
+            boolean exist = ticketItemRepository.existsByEventIdAndName(ticketItem.getEventId(), ticketItem.getName().trim());
+
+            if (exist){
+                throw new IllegalArgumentException("Hạng vé '" + ticketItem.getName() + "' đã tồn tại trong sự kiện này");
             }
         }
     }

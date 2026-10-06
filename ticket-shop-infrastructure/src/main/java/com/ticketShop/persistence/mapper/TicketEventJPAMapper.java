@@ -10,5 +10,8 @@ import java.util.List;
 public interface TicketEventJPAMapper extends JpaRepository<TicketEvent, Long> {
     List<TicketEvent> findByStatus(TicketEventStatus status);;
 
+
+    //check
     boolean existsByNameAndStartTimeAndEndTime(String name, LocalDateTime startTime, LocalDateTime endTime);
+    boolean existsById(Long id);
 }

@@ -16,4 +16,6 @@ public interface TicketItemRepository {
      * @return TicketDetail được lưu
      */
     TicketItem save(TicketItem ticketItem);
+
+    boolean existsByEventIdAndName(Long eventId, String name);
 }

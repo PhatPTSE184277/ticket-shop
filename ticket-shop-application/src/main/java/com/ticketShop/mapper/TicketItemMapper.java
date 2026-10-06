@@ -25,6 +25,7 @@ public class TicketItemMapper {
         ticketItem.setPriceFlash(createItemCommand.getPriceFlash());
         ticketItem.setSaleStartTime(createItemCommand.getSaleStartTime());
         ticketItem.setSaleEndTime(createItemCommand.getSaleEndTime());
+        ticketItem.setEventId(createItemCommand.getEventId());
 
         return ticketItem;
     }

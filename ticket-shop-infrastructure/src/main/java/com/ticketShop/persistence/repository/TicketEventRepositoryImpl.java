@@ -28,9 +28,16 @@ public class TicketEventRepositoryImpl implements TicketEventRepository {
         return ticketEventJPAMapper.save(ticketEvent);
     }
 
+
+    //Check
     @Override
     public boolean existsByNameAndStartTimeAndEndTime(String name, LocalDateTime startTime, LocalDateTime endTime) {
         return ticketEventJPAMapper.existsByNameAndStartTimeAndEndTime(name, startTime, endTime);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return ticketEventJPAMapper.existsById(id);
     }
 
 

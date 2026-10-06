@@ -11,6 +11,8 @@ import java.util.Date;
 
 @Data
 public class CreateTicketItemRequest {
+    private Long eventId;
+
     @NotBlank(message = "Ticket item name cannot be empty")
     private String name;
 

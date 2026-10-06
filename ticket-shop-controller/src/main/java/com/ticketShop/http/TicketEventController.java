@@ -50,7 +50,7 @@ public class TicketEventController {
      "startTime": "2024-05-01 18:00:00",
      "endTime": "2024-05-01 22:00:00"
      },
-     "detail": {
+     "ticketItem": {
      "name": "VIP",
      "stockInitial": 100,
      "stockAvailable": 100,
