@@ -2,6 +2,7 @@ package com.ticketShop.repository;
 
 import com.ticketShop.model.entity.TicketEvent;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TicketEventRepository {
@@ -14,5 +15,5 @@ public interface TicketEventRepository {
      */
     TicketEvent save(TicketEvent ticketEvent);
 
-
+    boolean existsByNameAndStartTimeAndEndTime(String name, LocalDateTime startTime, LocalDateTime endTime);
 }

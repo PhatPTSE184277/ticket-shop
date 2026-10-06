@@ -9,4 +9,11 @@ public interface TicketItemRepository {
     Optional<TicketItem> findById(Long id);
 
     List<TicketItem> findByEventId(Long eventId);
+
+    /**
+     * Lưu TicketItem mới
+     * @param ticketItem
+     * @return TicketDetail được lưu
+     */
+    TicketItem save(TicketItem ticketItem);
 }

@@ -1,4 +1,4 @@
-package com.ticketShop.model.dto.response;
+package com.ticketShop.model.dto;
 
 import com.ticketShop.model.enums.TicketEventStatus;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class TicketEventResponse {
+public class TicketEventDTO {
 
     private Long id;
 

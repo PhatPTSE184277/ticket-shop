@@ -1,28 +1,44 @@
 package com.ticketShop.mapper;
 
-import com.ticketShop.model.dto.response.TicketEventResponse;
+import com.ticketShop.model.command.CreateTicketEventCommand;
+import com.ticketShop.model.dto.TicketEventDTO;
 import com.ticketShop.model.entity.TicketEvent;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TicketEventMapper {
 
-    public TicketEventResponse toResponse(TicketEvent ticketEvent) {
+    public TicketEvent toEntity(CreateTicketEventCommand createEventCommand) {
+        if (createEventCommand == null) {
+            return null;
+        }
+
+        TicketEvent ticketEvent = new TicketEvent();
+
+        ticketEvent.setName(createEventCommand.getName());
+        ticketEvent.setDescription(createEventCommand.getDescription());
+        ticketEvent.setStartTime(createEventCommand.getStartTime());
+        ticketEvent.setEndTime(createEventCommand.getEndTime());
+
+        return ticketEvent;
+    }
+
+    public TicketEventDTO toDTO(TicketEvent ticketEvent) {
         if (ticketEvent == null) {
             return null;
         }
 
-        TicketEventResponse response = new TicketEventResponse();
+        TicketEventDTO dto = new TicketEventDTO();
 
-        response.setId(ticketEvent.getId());
-        response.setName(ticketEvent.getName());
-        response.setDescription(ticketEvent.getDescription());
-        response.setStartTime(ticketEvent.getStartTime());
-        response.setEndTime(ticketEvent.getEndTime());
-        response.setStatus(ticketEvent.getStatus());
-        response.setUpdatedAt(ticketEvent.getUpdatedAt());
-        response.setCreatedAt(ticketEvent.getCreatedAt());
+        dto.setId(ticketEvent.getId());
+        dto.setName(ticketEvent.getName());
+        dto.setDescription(ticketEvent.getDescription());
+        dto.setStartTime(ticketEvent.getStartTime());
+        dto.setEndTime(ticketEvent.getEndTime());
+        dto.setStatus(ticketEvent.getStatus());
+        dto.setUpdatedAt(ticketEvent.getUpdatedAt());
+        dto.setCreatedAt(ticketEvent.getCreatedAt());
 
-        return response;
+        return dto;
     }
 }

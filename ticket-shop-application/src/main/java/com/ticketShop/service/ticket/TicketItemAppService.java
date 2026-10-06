@@ -1,11 +1,11 @@
 package com.ticketShop.service.ticket;
 
-import com.ticketShop.model.dto.response.TicketItemResponse;
+import com.ticketShop.model.dto.TicketItemDTO;
 
 import java.util.List;
 
 public interface TicketItemAppService {
-    TicketItemResponse getTicketItemById(Long id, Long version);
+    TicketItemDTO getTicketItemById(Long id, Long version);
 
-    List<TicketItemResponse> getTicketItemsByEventId(Long eventId);
+    List<TicketItemDTO> getTicketItemsByEventId(Long eventId);
 }

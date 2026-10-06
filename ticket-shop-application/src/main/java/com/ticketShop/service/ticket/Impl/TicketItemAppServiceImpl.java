@@ -3,7 +3,7 @@ package com.ticketShop.service.ticket.Impl;
 import com.ticketShop.exception.enums.ResultCode;
 import com.ticketShop.mapper.TicketItemMapper;
 import com.ticketShop.model.cache.TicketItemCache;
-import com.ticketShop.model.dto.response.TicketItemResponse;
+import com.ticketShop.model.dto.TicketItemDTO;
 import com.ticketShop.service.ticket.TicketItemAppService;
 import com.ticketShop.service.ticket.cache.TicketItemCacheService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class TicketItemAppServiceImpl implements TicketItemAppService {
     private TicketItemMapper ticketItemMapper;
 
     @Override
-    public TicketItemResponse getTicketItemById(Long id, Long version) {
+    public TicketItemDTO getTicketItemById(Long id, Long version) {
         log.info("Implement Application : {}, {}: ", id, version);
         TicketItemCache ticketItemCache = ticketItemCacheService.getTicketItem(id, version);
         if (ticketItemCache == null || ticketItemCache.getTicketItem() == null) {
@@ -31,13 +31,13 @@ public class TicketItemAppServiceImpl implements TicketItemAppService {
             throw new ServiceException(ResultCode.TICKET_ITEM_NOT_EXIST);
         }
         // mapper to DTO
-        TicketItemResponse ticketItemResponse = ticketItemMapper.toResponse(ticketItemCache.getTicketItem());
-        ticketItemResponse.setVersion(ticketItemCache.getVersion());
-        return ticketItemResponse;
+        TicketItemDTO ticketItemDTO = ticketItemMapper.toDTO(ticketItemCache.getTicketItem());
+        ticketItemDTO.setVersion(ticketItemCache.getVersion());
+        return ticketItemDTO;
     }
 
     @Override
-    public List<TicketItemResponse> getTicketItemsByEventId(Long eventId) {
+    public List<TicketItemDTO> getTicketItemsByEventId(Long eventId) {
         List<TicketItemCache> ticketItemCaches = ticketItemCacheService.getTicketItemsByEvent(eventId
         );
 
@@ -46,7 +46,7 @@ public class TicketItemAppServiceImpl implements TicketItemAppService {
         }
         return ticketItemCaches.stream()
                 .map(TicketItemCache::getTicketItem)
-                .map(ticketItemMapper::toResponse)
+                .map(ticketItemMapper::toDTO)
                 .toList();
     }
 }

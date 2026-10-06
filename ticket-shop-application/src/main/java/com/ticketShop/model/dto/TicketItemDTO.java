@@ -1,4 +1,4 @@
-package com.ticketShop.model.dto.response;
+package com.ticketShop.model.dto;
 
 import com.ticketShop.model.enums.TicketItemStatus;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class TicketItemResponse {
+public class TicketItemDTO {
 
     private Long id;
 
@@ -19,7 +19,7 @@ public class TicketItemResponse {
 
     private int stockAvailable;
 
-    private boolean stockPrepared;
+    private boolean isStockPrepared;
 
     private BigDecimal priceOriginal;
 

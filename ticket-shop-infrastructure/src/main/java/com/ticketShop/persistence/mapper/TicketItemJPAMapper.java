@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface TicketItemJPAMapper extends JpaRepository<TicketItem, Long> {
     Optional<TicketItem> findById(Long id);
 
-    List<TicketItem> findByEventId(Long eventId);
+    List<TicketItem> findByEventId(Long eventId);;
 }

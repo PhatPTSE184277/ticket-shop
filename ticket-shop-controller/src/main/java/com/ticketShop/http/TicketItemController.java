@@ -1,6 +1,6 @@
 package com.ticketShop.http;
 
-import com.ticketShop.model.dto.response.TicketItemResponse;
+import com.ticketShop.model.dto.TicketItemDTO;
 import com.ticketShop.model.enums.ResultUtil;
 import com.ticketShop.model.vo.ResultMessage;
 import com.ticketShop.service.ticket.TicketItemAppService;
@@ -26,7 +26,7 @@ public class TicketItemController {
      */
     @GetMapping("/{ticketId}")
     @Operation(summary = "Get ticket item by ID")
-    public ResultMessage<TicketItemResponse> getTicketItemById(
+    public ResultMessage<TicketItemDTO> getTicketItemById(
             @Parameter(required = true)
             @PathVariable("ticketId") Long ticketId,
 
@@ -45,7 +45,7 @@ public class TicketItemController {
      */
     @GetMapping("/event/{eventId}/items")
     @Operation(summary = "Get ticket items by event ID")
-    public ResultMessage<List<TicketItemResponse>> getTicketItemsByEventId(
+    public ResultMessage<List<TicketItemDTO>> getTicketItemsByEventId(
 
             @Parameter(required = true)
             @PathVariable("eventId")
