@@ -27,6 +27,11 @@ public class TicketItemRepositoryImpl implements TicketItemRepository {
     }
 
     @Override
+    public void updateStatusByEventId(Long eventId, int status) {
+
+    }
+
+    @Override
     public TicketItem save(TicketItem ticketItem) {
         log.info("Saving TicketItem: {}", ticketItem.getName());
         return ticketItemJPAMapper.save(ticketItem);
