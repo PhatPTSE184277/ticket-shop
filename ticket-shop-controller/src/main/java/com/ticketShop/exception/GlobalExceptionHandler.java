@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Bắt lỗi Validation thủ công (như IllegalArgumentException từ TicketEventValidator)
+     * Bắt lỗi Validation thủ công (như IllegalArgumentException từ EventValidator)
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

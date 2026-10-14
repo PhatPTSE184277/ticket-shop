@@ -22,8 +22,8 @@ public class OrderQueue {
     @Column(name = "token", unique = true, nullable = false, length = 64)
     private String token; // Token định danh request đặt vé
 
-    @Column(name = "ticket_item_id", nullable = false)
-    private Long ticketItemId; // ID loại vé
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketId; // ID loại vé
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity; // Số lượng vé cần đặt

@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class PlaceOrderMQMessage {
     private String token;
-    private Long ticketEventId;
+    private Long eventId;
     private int quantity;
     private int userId;
     private long unitPrice;

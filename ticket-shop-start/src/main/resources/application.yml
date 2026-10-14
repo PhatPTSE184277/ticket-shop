@@ -11,6 +11,11 @@ server:
 
 
 spring:
+  kafka:
+    bootstrap-servers: "" # Làm trống hoặc trỏ tới địa chỉ vô hiệu hóa
+    admin:
+      auto-startup: false
+      fail-fast: false
   # application
   application:
     name: ticket-shop.com
@@ -54,6 +59,16 @@ spring:
   threads:
     virtual:
       enabled: true
+
+vnpay:
+  tmn-code: ${VNPAY_TMN_CODE}
+  secret-key: ${VNPAY_SECRET_KEY}
+  payment-url: ${VNPAY_PAYMENT_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+  return-url: ${VNPAY_RETURN_URL:http://127.0.0.1:8080/api/payment/callback}
+  currency-code: ${VNPAY_CURRENCY_CODE:VND}
+  locale: ${VNPAY_LOCALE:vn}
+  bank-code: ${VNPAY_BANK_CODE:NCB}
+
 resilience4j:
   circuitbreaker:
     instances:
@@ -101,3 +116,4 @@ management:
       show-details: always
     prometheus:
       enabled: true
+

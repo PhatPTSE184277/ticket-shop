@@ -44,7 +44,7 @@ public enum ResultCode {
     /**
      * Vé
      */
-        TICKET_ITEM_NOT_EXIST(11001, "Vé không tồn tại"),
+        TICKET_NOT_EXIST(11001, "Vé không tồn tại"),
 
     /**
      * Sự kiện

@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý người dùng';
 
 
--- 3. BẢNG SỰ KIỆN MỞ BÁN VÉ (ticket_event)
-CREATE TABLE IF NOT EXISTS `ticket_event` (
+-- 3. BẢNG SỰ KIỆN MỞ BÁN VÉ (event)
+CREATE TABLE IF NOT EXISTS `event` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID sự kiện',
     `name` VARCHAR(100) NOT NULL COMMENT 'Tên sự kiện',
     `description` TEXT NULL COMMENT 'Mô tả sự kiện',
@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS `ticket_event` (
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý sự kiện mở bán vé';
 
 
--- 4. BẢNG CHI TIẾT LOẠI VÉ (ticket_item)
-CREATE TABLE IF NOT EXISTS `ticket_item` (
+-- 4. BẢNG CHI TIẾT LOẠI VÉ (ticket)
+CREATE TABLE IF NOT EXISTS `ticket` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID loại vé',
     `name` VARCHAR(100) NOT NULL COMMENT 'Tên loại vé',
     `description` TEXT NULL COMMENT 'Mô tả loại vé',
@@ -62,13 +62,13 @@ CREATE TABLE IF NOT EXISTS `ticket_item` (
     PRIMARY KEY (`id`),
     KEY `idx_event_id` (`event_id`),
     KEY `idx_status_sale_time` (`status`, `sale_start_time`, `sale_end_time`),
-    CONSTRAINT `fk_ticket_item_event`
-    FOREIGN KEY (`event_id`) REFERENCES `ticket_event` (`id`)
+    CONSTRAINT `fk_ticket_event`
+    FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý các loại vé thuộc sự kiện';
 
 
--- 5. BẢNG ĐƠN HÀNG (ticket_order_202604)
-CREATE TABLE IF NOT EXISTS `ticket_order_202604` (
+-- 5. BẢNG ĐƠN HÀNG (order_202604)
+CREATE TABLE IF NOT EXISTS `order_202604` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID đơn hàng',
     `user_id` BIGINT NOT NULL COMMENT 'ID người dùng đặt vé',
     `order_number` VARCHAR(50) NOT NULL COMMENT 'Mã đơn hàng duy nhất',
@@ -89,8 +89,8 @@ CREATE TABLE IF NOT EXISTS `ticket_order_202604` (
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng quản lý đơn hàng';
 
 
--- 6. BẢNG CHI TIẾT ĐƠN HÀNG (ticket_order_details_202604)
-CREATE TABLE IF NOT EXISTS `ticket_order_details_202604` (
+-- 6. BẢNG CHI TIẾT ĐƠN HÀNG (order_details_202604)
+CREATE TABLE IF NOT EXISTS `order_details_202604` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Khóa chính - ID chi tiết đơn hàng',
     `order_id` BIGINT NOT NULL COMMENT 'ID đơn hàng',
     `ticket_item_id` BIGINT NOT NULL COMMENT 'ID loại vé',
@@ -103,9 +103,9 @@ CREATE TABLE IF NOT EXISTS `ticket_order_details_202604` (
     KEY `idx_order_id` (`order_id`),
     KEY `idx_ticket_item_id` (`ticket_item_id`),
     CONSTRAINT `fk_order_detail_order`
-    FOREIGN KEY (`order_id`) REFERENCES `ticket_order_202604` (`id`),
-    CONSTRAINT `fk_order_detail_ticket_item`
-    FOREIGN KEY (`ticket_item_id`) REFERENCES `ticket_item` (`id`)
+    FOREIGN KEY (`order_id`) REFERENCES `order_202604` (`id`),
+    CONSTRAINT `fk_order_detail_ticket`
+    FOREIGN KEY (`ticket_item_id`) REFERENCES `ticket` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng chi tiết các vé trong đơn hàng';
 
 
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `payment_transaction` (
     KEY `idx_user_id` (`user_id`),
     KEY `idx_payment_status` (`payment_status`),
     CONSTRAINT `fk_payment_order`
-    FOREIGN KEY (`order_id`) REFERENCES `ticket_order_202604` (`id`),
+    FOREIGN KEY (`order_id`) REFERENCES `order_202604` (`id`),
     CONSTRAINT `fk_payment_user`
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng lưu lịch sử giao dịch thanh toán';
@@ -153,11 +153,11 @@ CREATE TABLE IF NOT EXISTS `order_queue` (
     KEY `idx_queue_ticket_item` (`ticket_item_id`),
     KEY `idx_queue_user` (`user_id`),
     CONSTRAINT `fk_queue_ticket_item`
-    FOREIGN KEY (`ticket_item_id`) REFERENCES `ticket_item` (`id`),
+    FOREIGN KEY (`ticket_item_id`) REFERENCES `ticket` (`id`),
     CONSTRAINT `fk_queue_user`
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
     CONSTRAINT `fk_queue_order`
-    FOREIGN KEY (`order_id`) REFERENCES `ticket_order_202604` (`id`)
+    FOREIGN KEY (`order_id`) REFERENCES `order_202604` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng hàng đợi xử lý yêu cầu đặt vé';
 
 
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `idempotency_key` (
     CONSTRAINT `fk_idempotency_user`
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
     CONSTRAINT `fk_idempotency_order`
-    FOREIGN KEY (`order_id`) REFERENCES `ticket_order_202604` (`id`)
+    FOREIGN KEY (`order_id`) REFERENCES `order_202604` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Bảng lưu khóa chống xử lý trùng lặp';
 
 
@@ -210,7 +210,7 @@ VALUES
 
 
 -- Dữ liệu mẫu sự kiện
-INSERT INTO `ticket_event`
+INSERT INTO `event`
 (`name`, `description`, `start_time`, `end_time`, `status`)
 VALUES
     ('Flash Sale Vé 12/12',
@@ -227,7 +227,7 @@ VALUES
 
 
 -- Dữ liệu mẫu loại vé
-INSERT INTO `ticket_item`
+INSERT INTO `ticket`
 (`name`, `description`, `stock_initial`, `stock_available`, `is_stock_prepared`,
  `price_original`, `price_flash`, `sale_start_time`, `sale_end_time`,
  `status`, `version`, `event_id`)
@@ -266,7 +266,7 @@ VALUES
 
 
 -- Dữ liệu mẫu đơn hàng
-INSERT INTO `ticket_order_202604`
+INSERT INTO `order_202604`
 (`user_id`, `order_number`, `total_amount`, `order_status`,
  `order_date`, `expire_at`, `order_notes`)
 VALUES
@@ -280,7 +280,7 @@ VALUES
 
 
 -- Dữ liệu mẫu chi tiết đơn hàng
-INSERT INTO `ticket_order_details_202604`
+INSERT INTO `order_details_202604`
 (`order_id`, `ticket_item_id`, `quantity`, `unit_price`, `total_price`)
 VALUES
     (1, 1, 2, 10000.00, 20000.00),
