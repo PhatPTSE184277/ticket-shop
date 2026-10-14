@@ -14,6 +14,8 @@ spring:
   # application
   application:
     name: ticket-shop.com
+  config:
+    import: optional:file:.env[.properties]
   #DBS
   datasource:
     hikari:
