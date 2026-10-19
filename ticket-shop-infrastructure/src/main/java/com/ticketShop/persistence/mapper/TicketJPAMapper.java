@@ -1,6 +1,7 @@
 package com.ticketShop.persistence.mapper;
 
 import com.ticketShop.model.entity.Ticket;
+import com.ticketShop.model.enums.TicketStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,5 +14,5 @@ public interface TicketJPAMapper extends JpaRepository<Ticket, Long> {
 
     //Check
     boolean existsByEventIdAndName(Long eventId, String name);
-
+    boolean existsByIdAndStatus(Long ticketId, TicketStatus status);
 }

@@ -3,6 +3,7 @@ package com.ticketShop.service.Impl;
 import com.ticketShop.model.entity.Booking;
 import com.ticketShop.repository.BookingRepository;
 import com.ticketShop.service.BookingDomainService;
+import com.ticketShop.validator.BookingValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,23 +18,17 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private BookingValidator  bookingValidator;
+
     @Override
     public Booking createBooking(Long ticketId, int quantity) {
-        if (ticketId == null || ticketId <= 0) {
-            throw new IllegalArgumentException("Invalid ticket ID");
-        }
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than 0");
-        }
-        if (quantity > 10) {
-            throw new IllegalArgumentException("Cannot book more than 10 tickets at once");
-        }
+       bookingValidator.validateCreateBooking(ticketId, quantity);
 
         Booking booking = new Booking();
         booking.setTicketId(ticketId);
         booking.setQuantity(quantity);
         booking.setBookingCode(generateBookingCode());
-        booking.setStatus(1); // CONFIRMED
         booking.setCreatedAt(LocalDateTime.now());
 
         Booking saved = bookingRepository.save(booking);

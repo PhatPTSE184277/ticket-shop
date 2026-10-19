@@ -33,7 +33,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
   jpa:
     database: mysql
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: none  # Không tự động tạo/ cập nhật bảng thay vì update
     properties:

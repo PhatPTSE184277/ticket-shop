@@ -1,6 +1,7 @@
 package com.ticketShop.persistence.repository;
 
 import com.ticketShop.model.entity.Ticket;
+import com.ticketShop.model.enums.TicketStatus;
 import com.ticketShop.persistence.mapper.TicketJPAMapper;
 import com.ticketShop.repository.TicketRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,11 @@ public class TicketRepositoryImpl implements TicketRepository {
     @Override
     public boolean existsByEventIdAndName(Long eventId, String name) {
         return ticketJPAMapper.existsByEventIdAndName(eventId, name);
+    }
+
+    @Override
+    public boolean existsByIdAndStatus(Long ticketId, TicketStatus status) {
+        return ticketJPAMapper.existsByIdAndStatus(ticketId, status);
     }
 
 }
