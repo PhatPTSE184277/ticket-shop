@@ -7,7 +7,7 @@ import com.ticketShop.model.command.CreateTicketCommand;
 import com.ticketShop.model.dto.EventDTO;
 import com.ticketShop.model.enums.ResultUtil;
 import com.ticketShop.model.vo.ResultMessage;
-import com.ticketShop.service.ticket.EventAppService;
+import com.ticketShop.service.event.EventAppService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.ticketShop.service.ticket;
+package com.ticketShop.service.order;
 
 public interface OrderAppService {
     boolean decreaseStockLevel1(Long tickerId, int quantity);

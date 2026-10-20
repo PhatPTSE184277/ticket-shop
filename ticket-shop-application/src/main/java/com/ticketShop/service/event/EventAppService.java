@@ -1,4 +1,4 @@
-package com.ticketShop.service.ticket;
+package com.ticketShop.service.event;
 
 import com.ticketShop.model.command.CreateEventCommand;
 import com.ticketShop.model.command.CreateTicketCommand;

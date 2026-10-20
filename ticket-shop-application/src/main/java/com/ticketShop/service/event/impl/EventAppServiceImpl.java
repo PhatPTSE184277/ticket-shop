@@ -1,4 +1,4 @@
-package com.ticketShop.service.ticket.Impl;
+package com.ticketShop.service.event.impl;
 
 import com.ticketShop.cache.RedisInfraService;
 import com.ticketShop.mapper.EventMapper;
@@ -9,8 +9,8 @@ import com.ticketShop.model.dto.EventDTO;
 import com.ticketShop.model.entity.Event;
 import com.ticketShop.model.entity.Ticket;
 import com.ticketShop.service.EventDomainService;
-import com.ticketShop.service.ticket.EventAppService;
-import com.ticketShop.service.ticket.cache.EventCacheService;
+import com.ticketShop.service.event.EventAppService;
+import com.ticketShop.service.event.cache.EventCacheService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

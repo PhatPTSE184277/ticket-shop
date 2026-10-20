@@ -1,6 +1,6 @@
 package com.ticketShop.http;
 
-import com.ticketShop.service.ticket.OrderAppService;
+import com.ticketShop.service.order.OrderAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

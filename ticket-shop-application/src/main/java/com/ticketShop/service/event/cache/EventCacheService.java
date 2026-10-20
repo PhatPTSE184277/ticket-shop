@@ -1,4 +1,4 @@
-package com.ticketShop.service.ticket.cache;
+package com.ticketShop.service.event.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

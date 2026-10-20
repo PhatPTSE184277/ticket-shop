@@ -1,7 +1,7 @@
-package com.ticketShop.service.ticket.Impl;
+package com.ticketShop.service.order.impl;
 
 import com.ticketShop.service.OrderDomainService;
-import com.ticketShop.service.ticket.OrderAppService;
+import com.ticketShop.service.order.OrderAppService;
 import jakarta.persistence.LockTimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.PessimisticLockException;
