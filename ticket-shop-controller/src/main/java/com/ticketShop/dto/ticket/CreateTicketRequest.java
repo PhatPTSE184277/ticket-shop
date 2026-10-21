@@ -1,4 +1,4 @@
-package com.ticketShop.dto;
+package com.ticketShop.dto.ticket;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;

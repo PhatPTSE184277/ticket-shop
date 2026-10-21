@@ -47,6 +47,17 @@ public enum ResultCode {
         TICKET_NOT_EXIST(11001, "Vé không tồn tại"),
 
     /**
+     * Người dùng & Xác thực (User & Auth)
+     */
+        USER_NOT_EXIST(20001, "Người dùng không tồn tại"),
+        PASSWORD_ERROR(20002, "Mật khẩu không chính xác"),
+        ACCOUNT_LOCKED(20003, "Tài khoản đã bị khóa hoặc chưa kích hoạt"),
+        TOKEN_INVALID(20004, "Token không hợp lệ hoặc đã hết hạn"),
+        USER_ALREADY_EXIST(20005, "Tên đăng nhập đã tồn tại"),
+        EMAIL_ALREADY_EXIST(20006, "Email đã được sử dụng"),
+        PHONE_ALREADY_EXIST(20007, "Số điện thoại đã được sử dụng"),
+
+    /**
      * Sự kiện
      */
         EVENT_NOT_EXIST(41001, "Sự kiện không tồn tại"),

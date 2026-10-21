@@ -1,5 +1,6 @@
-package com.ticketShop.dto;
+package com.ticketShop.dto.event;
 
+import com.ticketShop.dto.ticket.CreateTicketRequest;
 import jakarta.validation.Valid;
 import lombok.Data;
 

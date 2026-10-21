@@ -1,8 +1,8 @@
 package com.ticketShop.mapper;
 
 
-import com.ticketShop.dto.CreateEventRequest;
-import com.ticketShop.dto.CreateTicketRequest;
+import com.ticketShop.dto.event.CreateEventRequest;
+import com.ticketShop.dto.ticket.CreateTicketRequest;
 import com.ticketShop.model.command.CreateEventCommand;
 import com.ticketShop.model.command.CreateTicketCommand;
 

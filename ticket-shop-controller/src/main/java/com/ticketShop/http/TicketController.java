@@ -1,6 +1,6 @@
 package com.ticketShop.http;
 
-import com.ticketShop.dto.CreateTicketRequest;
+import com.ticketShop.dto.ticket.CreateTicketRequest;
 import com.ticketShop.mapper.TicketControllerMapper;
 import com.ticketShop.model.command.CreateTicketCommand;
 import com.ticketShop.model.dto.TicketDTO;

@@ -1,6 +1,6 @@
 package com.ticketShop.http;
 
-import com.ticketShop.dto.CreateEventFullRequest;
+import com.ticketShop.dto.event.CreateEventFullRequest;
 import com.ticketShop.mapper.EventControllerMapper;
 import com.ticketShop.model.command.CreateEventCommand;
 import com.ticketShop.model.command.CreateTicketCommand;

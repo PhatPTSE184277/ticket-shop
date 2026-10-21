@@ -132,4 +132,12 @@ public class ResultUtil<T> {
         this.responseMessage.setCode(code);
         return this.responseMessage;
     }
+
+    public static <T> ResultMessage<T> success(String message) {
+        ResultUtil<T> util = new ResultUtil<>();
+        util.responseMessage.setSuccess(true);
+        util.responseMessage.setMessage(message);
+        util.responseMessage.setCode(SUCCESS_CODE);
+        return util.responseMessage;
+    }
 }

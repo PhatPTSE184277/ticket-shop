@@ -1,6 +1,6 @@
 package com.ticketShop.mapper;
 
-import com.ticketShop.dto.CreateTicketRequest;
+import com.ticketShop.dto.ticket.CreateTicketRequest;
 import com.ticketShop.model.command.CreateTicketCommand;
 
 import java.math.BigDecimal;
